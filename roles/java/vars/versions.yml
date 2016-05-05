@@ -1,0 +1,27 @@
+---
+# JREs are omitted from this list to ensure that JDKs correctly clean up.
+java_packages_full:
+  - openjdk-6-jdk
+  - openjdk-6-jdk:i386
+  - openjdk-6-jre
+  - openjdk-6-jre:i386
+  - openjdk-6-jre-headless
+  - openjdk-6-jre-headless:i386
+  - openjdk-6-jre:amd64
+  - openjdk-6-jre-headless:amd64
+  #- openjdk-6-jre-zero
+  #- openjdk-6-jre-zero:i386
+  - openjdk-7-jdk
+  - openjdk-7-jdk:i386
+  - openjdk-7-jre
+  - openjdk-7-jre-headless
+  - openjdk-7-jre:i386
+  - openjdk-7-jre-headless:i386
+  - openjdk-7-jre:amd64
+  - openjdk-7-jre-headless:amd64
+  #- openjdk-7-jre-zero
+  #- openjdk-7-jre-zero:i386
+  - oracle-java6-installer
+  - oracle-java7-installer
+  - oracle-java8-installer
+java_packages_to_remove: "{{ java_packages_full | difference(java_packages) }}"

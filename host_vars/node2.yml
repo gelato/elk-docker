@@ -1,0 +1,19 @@
+---
+    logstash_combined_configs:
+        - syslog.conf
+        - authlog.conf
+        - nginx.conf
+
+    logstash_patterns:
+        - grok-patterns
+        - linux-syslog
+        - nginx
+
+    outputs_to_install:
+        - output-authlog.conf
+        - output-syslog.conf
+        - output-nginx.conf
+
+    timezone: "Europe/Simferopol"
+
+    logstash_endpoint_host_ip: "127.0.0.1:9200"

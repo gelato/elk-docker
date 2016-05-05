@@ -1,0 +1,5 @@
+---
+    dependencies:
+    - { role: java, java_packages: oracle-java8-installer, java_cleanup: True }
+    - { role: hosts }
+    - { role: tzdata }

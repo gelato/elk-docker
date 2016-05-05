@@ -1,0 +1,16 @@
+output {
+    if [type] == "linux-authlog" {
+        elasticsearch {
+             workers => {{ logstash_workers }}
+             hosts => ["{{ logstash_endpoint_host_ip }}"]
+             index => "logstash-authlog-%{+YYYY.MM.dd}"
+             document_type => "linux-authlog"
+             }
+    }  else if [type] == "linux-authlog" and "logstash_ssh_parsefailure" in [tags] {
+        file { path => "/var/log/logstash/failed_ssh_events-%{+YYYY-MM-dd}" }
+    } else if [type] == "linux-authlog" and "logstash_pam_parsefailure" in [tags] {
+        file { path => "/var/log/logstash/failed_pam_events-%{+YYYY-MM-dd}" }
+    } else if [type] == "linux-authlog" and "logstash_authlog_parsefailure" in [tags] {
+        file { path => "/var/log/logstash/failed_authlog_events-%{+YYYY-MM-dd}" }
+    }
+}

@@ -1,0 +1,90 @@
+---
+  - name: Download and install logstash apt public signing key
+    apt_key: url="{{ logstash_signing_key_url }}" state=present
+
+
+  - name: Add logstash apt repository definition to apt sources list
+    apt_repository: repo="{{ logstash_apt_repo }}" update_cache=yes state=present
+
+  - name: Install logstash
+    apt: name=logstash state=present
+
+  - name: Ensure logstash home dir is created
+    file:
+      path: "{{ logstash_home_dir }}"
+      owner: "{{ logstash_user }}"
+      group: "{{ logstash_group }}"
+      mode: 0775
+      state: directory
+
+  - name: Create logstash configs
+    copy:
+      src: "{{ logstash_config_templates }}/{{ item }}"
+      dest: "{{ logstash_conf_dir }}/{{ item }}"
+      owner: "root"
+      group: "root"
+      mode: 0644
+    when: logstash_combined_configs
+    with_items: "{{ logstash_combined_configs }}"
+    notify:
+      - validate logstash config
+      - restart logstash
+
+  - name: Create logstash patterns
+    template:
+      src: "{{ logstash_pattern_templates }}/{{ item }}"
+      dest: "{{ logstash_patterns_dir }}/{{ item }}"
+      owner: "{{ logstash_user }}"
+      group: "{{ logstash_group }}"
+      mode: 0644
+    when: logstash_patterns
+    with_items: "{{ logstash_patterns }}"
+    notify:
+      - validate logstash config
+      - restart logstash
+
+  - name: Create logstash output configs
+    template:
+      src: "{{ logstash_output_templates }}/{{ item }}"
+      dest: "{{ logstash_conf_dir }}/{{ item }}"
+      owner: "root"
+      group: "root"
+      mode: 0644
+    when: outputs_to_install
+    with_items: "{{ outputs_to_install }}"
+    notify:
+      - validate logstash config
+      - restart logstash
+
+  - name: Create logstash default settings file
+    template:
+      src: etc.default.logstash.j2
+      dest: "/etc/default/logstash"
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+      - restart logstash
+
+  - name: Get the list of configs to delete
+    shell: ls -1 {{ logstash_conf_dir }}
+    register: configs_to_delete
+    when: logstash_combined_configs and outputs_to_install is defined
+
+  - name: Remove unmanaged files from logstash config dir
+    file: path={{ logstash_conf_dir }}/{{ item }} state=absent
+    with_items: configs_to_delete.stdout_lines
+    when: item not in outputs_to_install and item not in logstash_combined_configs
+
+  - name: Get the list of all patterns to delete
+    shell: ls -1 {{ logstash_patterns_dir }}
+    register: patterns_to_delete
+    when: logstash_patterns is defined
+
+  - name: Remove unmanaged patterns
+    file: path={{ logstash_patterns_dir }}/{{ item }} state=absent
+    with_items: patterns_to_delete.stdout_lines
+    when: item not in logstash_patterns
+
+  - name: Start logstash
+    service: name=logstash enabled=yes state=started
