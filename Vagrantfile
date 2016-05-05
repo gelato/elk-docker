@@ -28,6 +28,7 @@ Vagrant.configure(2) do |config|
 
            if i == $nodes
                node.vm.provision :ansible do |ansible|
+                  #  ansible.verbose = "vvv"
                    ansible.limit = "all"
                    ansible.playbook = "main.yml"
                    ansible.groups = {

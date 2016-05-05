@@ -11,4 +11,4 @@ elasticsearch_memory_heap_size: '{{ (ansible_memtotal_mb | int * elasticsearch_m
 elasticsearch_discovery_multicast_port: 54328
 
 # networking
-elasticsearch_bind_host: '{{ elastic_ipv4_address }}'
+elasticsearch_bind_host: '0.0.0.0'

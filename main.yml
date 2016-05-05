@@ -1,7 +1,6 @@
 ---
-- hosts: [main]
-  become: True
+  - hosts: main
+    become: True
 
-- include:
-  - elasticsearch.yml
-  - logstash.yml
+  - include: elasticsearch.yml
+  - include: logstash.yml

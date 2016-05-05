@@ -1,7 +1,8 @@
 ---
   - hosts: elasticsearch_master
     become: True
-    vars_files: vars/elasticsearch/elasticsearch.yml
+    vars_files:
+      - "vars/elasticsearch/elastic.yml"
     roles:
-      role: elasticsearch
-      tags: elasticsearch_role
+      - role: elasticsearch
+        tags: elasticsearch_role

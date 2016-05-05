@@ -11,11 +11,14 @@
 
   - name: Ensure logstash home dir is created
     file:
-      path: "{{ logstash_home_dir }}"
+      path: "{{ item }}"
       owner: "{{ logstash_user }}"
       group: "{{ logstash_group }}"
       mode: 0775
       state: directory
+    with_items:
+      - "{{ logstash_home_dir }}"
+      - "{{ logstash_patterns_dir }}"
 
   - name: Create logstash configs
     copy:
@@ -45,7 +48,7 @@
 
   - name: Create logstash output configs
     template:
-      src: "{{ logstash_output_templates }}/{{ item }}"
+      src: "{{ logstash_output_templates }}/{{ item }}.j2"
       dest: "{{ logstash_conf_dir }}/{{ item }}"
       owner: "root"
       group: "root"

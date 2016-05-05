@@ -22,7 +22,7 @@ logstash_kill_on_stop_timeout: 0
 
 ############
 ##  Package
-logstash_version: "2.3.2"
+logstash_version: "2.3"
 logstash_signing_key_url: "https://packages.elastic.co/GPG-KEY-elasticsearch"
 logstash_apt_repo: "deb http://packages.elastic.co/logstash/{{ logstash_version }}/debian stable main"
 logstash_key_id: "D88E42B4"
