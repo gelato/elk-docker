@@ -1,4 +1,8 @@
 ---
+
+  - name: Adding user "{{ logstash_user }}"
+    user: name="{{ logstash_user }}" groups=sudo append=yes
+
   - name: Download and install logstash apt public signing key
     apt_key: url="{{ logstash_signing_key_url }}" state=present
 
@@ -77,7 +81,7 @@
 
   - name: Remove unmanaged files from logstash config dir
     file: path={{ logstash_conf_dir }}/{{ item }} state=absent
-    with_items: configs_to_delete.stdout_lines
+    with_items: "{{ configs_to_delete.stdout_lines }}"
     when: item not in outputs_to_install and item not in logstash_combined_configs
 
   - name: Get the list of all patterns to delete
@@ -88,7 +92,7 @@
 
   - name: Remove unmanaged patterns
     file: path={{ logstash_patterns_dir }}/{{ item }} state=absent
-    with_items: patterns_to_delete.stdout_lines
+    with_items: "{{ patterns_to_delete.stdout_lines }}"
     when: item not in logstash_patterns
 
   - name: Start logstash
