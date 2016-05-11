@@ -17,10 +17,6 @@ elasticsearch_group_coordinator: 'elasticsearch_coordinator'
 elasticsearch_group_loadbalancer: 'elasticsearch_loadbalancer'
 
 
-# Automatically install Java 7 Open JDK JRE.
-elasticsearch_role_dependencies: ['java', 'hosts']
-
-
 # ---- Version ----
 
 elasticsearch_major_version: '2.x'
@@ -200,7 +196,7 @@ elasticsearch_recovery_max_bytes_per_sec: '20mb'
 # ---- Discovery ----
 
 # Consider raising this once you have > 2 nodes.
-elasticsearch_discovery_zen_minimum_master_nodes: 2
+elasticsearch_discovery_zen_minimum_master_nodes: 3
 
 elasticsearch_discovery_zen_ping_timeout: '3s'
 elasticsearch_discovery_zen_multicast_enabled: false

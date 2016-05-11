@@ -73,6 +73,7 @@
     shell: ls -1 {{ logstash_conf_dir }}
     register: configs_to_delete
     when: logstash_combined_configs and outputs_to_install is defined
+    changed_when: False
 
   - name: Remove unmanaged files from logstash config dir
     file: path={{ logstash_conf_dir }}/{{ item }} state=absent
@@ -83,6 +84,7 @@
     shell: ls -1 {{ logstash_patterns_dir }}
     register: patterns_to_delete
     when: logstash_patterns is defined
+    changed_when: False
 
   - name: Remove unmanaged patterns
     file: path={{ logstash_patterns_dir }}/{{ item }} state=absent

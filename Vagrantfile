@@ -36,7 +36,8 @@ Vagrant.configure(2) do |config|
                        "logstash" => ["node[1:4]"],
                        "elasticsearch_master" => ["node[1:3]"],
                        "elasticsearch_master:vars" => {
-                           "elasticsearch_publish_host" => "{{ ansible_eth1.ipv4.address }}"
+                           "elasticsearch_publish_host" => "{{ ansible_eth1.ipv4.address }}",
+                           "elasticsearch_discovery_zen_ping_unicast_hosts" => "{{ hostvars | fetchlistfromdict(groups.elasticsearch_master) | map(attribute='ansible_eth1.ipv4') | map(attribute='address') | list }}"
                        }
                     }
                end

@@ -316,7 +316,7 @@ indicies.recovery.concurrent_streams: {{ elasticsearch_recovery_concurrent_strea
 # than 1 when running more than 2 nodes in the cluster.
 #
 #discovery.zen.minimum_master_nodes: 1
-{% if elasticsearch_discovery_minimum_master_nodes is defined and elasticsearch_discovery_minimum_master_nodes %}
+{% if elasticsearch_discovery_zen_minimum_master_nodes is defined and elasticsearch_discovery_zen_minimum_master_nodes %}
 discovery.zen.minimum_master_nodes: {{ elasticsearch_discovery_zen_minimum_master_nodes }}
 {% endif %}
 
