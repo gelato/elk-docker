@@ -1,14 +1,14 @@
 ---
     logstash_combined_configs:
-        - syslog.conf
-        - authlog.conf
+        - syslog
+        - authlog
 
     logstash_patterns:
         - grok-patterns
         - linux-syslog
 
     outputs_to_install:
-        - output-authlog.conf
-        - output-syslog.conf
+        - output-authlog
+        - output-syslog
 
     tzdata_timezone: "Europe/Simferopol"

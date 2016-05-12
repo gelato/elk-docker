@@ -3,7 +3,7 @@ output {
         elasticsearch {
              workers => {{ logstash_workers }}
              hosts => ["{{ logstash_endpoint_host_ip }}"]
-             index => "logstash-authlog-%{+YYYY.MM.dd}"
+             index => "{{ logstash_index_name }}"
              document_type => "linux-authlog"
              }
     }  else if [type] == "linux-authlog" and "logstash_ssh_parsefailure" in [tags] {

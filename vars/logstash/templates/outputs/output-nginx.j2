@@ -3,14 +3,14 @@ output {
         elasticsearch {
              workers => {{ logstash_workers }}
              hosts => ["{{ logstash_endpoint_host_ip }}"]
-             index => "logstash-nginx-access-%{+YYYY.MM.dd}"
+             index => "{{ logstash_index_name }}"
              document_type => "linux-nginx"
          }
    } else if [type] == "nginx-error" {
         elasticsearch {
              workers => {{ logstash_workers }}
              hosts => ["{{ logstash_endpoint_host_ip }}"]
-             index => "logstash-nginx-error-%{+YYYY.MM.dd}"
+             index => "logstash-nginx-error-%{+YYYY.MM.dd}-{{ logstash_endpoint_host_ip }}"
              document_type => "linux-nginx"
          }
    } else if [type] == "nginx-access" and "logstash_nginx_access_parsefailure" in [tags] {

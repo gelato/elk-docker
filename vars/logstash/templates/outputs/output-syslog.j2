@@ -5,7 +5,7 @@ output {
         elasticsearch {
              workers => {{ logstash_workers }}
              hosts => ["{{ logstash_endpoint_host_ip }}"]
-             index => "logstash-syslog-%{+YYYY.MM.dd}"
+             index => "{{ logstash_index_name }}"
              document_type => "linux-syslog"
              }
     }  else if [type] == "linux-syslog" and "logstash_syslog_parsefailure" in [tags] {

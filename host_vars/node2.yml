@@ -1,8 +1,8 @@
 ---
     logstash_combined_configs:
-        - syslog.conf
-        - authlog.conf
-        - nginx.conf
+        - syslog
+        - authlog
+        - nginx
 
     logstash_patterns:
         - grok-patterns
@@ -10,9 +10,9 @@
         - nginx
 
     outputs_to_install:
-        - output-authlog.conf
-        - output-syslog.conf
-        - output-nginx.conf
+        - output-authlog
+        - output-syslog
+        - output-nginx
 
     timezone: "Europe/Simferopol"
 
