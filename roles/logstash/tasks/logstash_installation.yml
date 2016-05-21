@@ -1,6 +1,6 @@
 ---
 
-  - name: Adding user "{{ logstash_user }}"
+  - name: Adding user "{{ logstash_user }} to adm group"
     user: name="{{ logstash_user }}" groups=adm,syslog append=yes
     notify:
       - restart logstash

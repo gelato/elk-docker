@@ -32,3 +32,10 @@ logstash_key_id: "D88E42B4"
 logstash_config_templates: "vars/logstash/templates/config"
 logstash_pattern_templates: "vars/logstash/templates/patterns"
 logstash_output_templates: "vars/logstash/templates/outputs"
+
+###########
+## Plugins
+logstash_plugins:
+  - logstash-input-beats
+logstash_plugin_version: 2.3.1
+remove_plugins: []

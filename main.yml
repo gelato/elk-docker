@@ -4,3 +4,4 @@
 
   - include: elasticsearch.yml
   - include: logstash.yml
+  - include: filebeat.yml

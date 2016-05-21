@@ -1,0 +1,6 @@
+filebeat_template_dir: "vars/filebeat/templates"
+filebeat_destinations:
+  - 192.168.0.173
+  - 192.168.0.174
+
+logstash_port: 5000

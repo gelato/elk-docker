@@ -1,7 +1,15 @@
+# input {
+#     file {
+#         type => "linux-syslog"
+#         path => ["/var/log/syslog"]
+#     }
+# }
+
 input {
-    file {
+    beats {
         type => "linux-syslog"
-        path => ["/var/log/syslog"]
+        port => 5000
+        host => "0.0.0.0"
     }
 }
 

@@ -1,0 +1,8 @@
+---
+  - hosts: filebeat
+    become: True
+    vars_files:
+      - "vars/filebeat/filebeat.yml"
+    roles:
+      - role: filebeat
+        tags: filebeat_role

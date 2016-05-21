@@ -1,7 +1,15 @@
+# input {
+#     file {
+#         type => "linux-authlog"
+#         path => ["/var/log/auth.log"]
+#     }
+# }
+
 input {
-    file {
+    beats {
         type => "linux-authlog"
-        path => ["/var/log/auth.log"]
+        port => 5000
+        host => "0.0.0.0"
     }
 }
 

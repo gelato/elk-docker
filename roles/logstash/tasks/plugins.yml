@@ -1,13 +1,40 @@
-# Loop though logstash_plugins and install them
-- name: Removing Plugins if they exist
-  action: >
-    shell bin/plugin uninstall "{{ item.name }}"
-    chdir="{{ logstash_home_dir }}"
-  with_items: logstash_plugins
-  ignore_errors: yes
-- name: Installing Plugins by Name
-  action: >
-    shell bin/plugin install "{{ item.name }}"
-    chdir="{{ logstash_home_dir }}"
-  with_items: logstash_plugins
-  ignore_errors: no
+---
+  
+  - name: Removing Plugins if they exist
+    action: >
+      shell bin/logstash-plugin uninstall "{{ item }}"
+      chdir="{{ logstash_install_dir }}"
+    with_items: "{{ logstash_plugins }}"
+    when: logstash_plugins is defined
+    ignore_errors: yes
+    notify:
+      - restart logstash
+    tags: logstash_config
+
+  - name: Installing Plugins by Name
+    action: >
+      shell bin/logstash-plugin install "{{ item }}"
+      chdir="{{ logstash_install_dir }}"
+    with_items: "{{ logstash_plugins }}"
+    when: logstash_plugins is defined
+    ignore_errors: no
+    notify:
+      - restart logstash
+    tags: logstash_config
+
+# - name: Download and install latest plugins
+#   get_url:
+#     dest: "/tmp/plugins.tar.gz"
+#     url: "https://download.elastic.co/logstash/logstash/logstash-all-plugins-{{ logstash_plugin_version }}.tar.gz"
+#     mode: 0777
+#
+# - name: Installing Plugins pack
+#   action: >
+#     shell /opt/logstash/bin/logstash-plugin unpack "{{ item }}"
+#   with_items:
+#     - "/tmp/plugins.tar.gz"
+#   when: logstash_plugins is defined
+#   ignore_errors: no
+#   notify:
+#     - restart logstash
+#   tags: logstash_config

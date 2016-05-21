@@ -1,0 +1,8 @@
+# ---
+#   - hosts: rabbit
+#     become: True
+#     vars_files:
+#       - "vars/rabbit/rabbit.yml"
+#     roles:
+#       - role: rabbit
+#         tags: rabbit_role

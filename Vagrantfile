@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 ENV["LC_ALL"] = "en_US.UTF-8"
-$nodes = 4
+$nodes = 5
 
 Vagrant.configure(2) do |config|
 
@@ -11,7 +11,7 @@ Vagrant.configure(2) do |config|
      config.vm.define "node#{i}" do |node|
          node.vm.box = "ubuntu/trusty64"
          node.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
-         node.vm.network :public_network, ip: "192.168.0.#{230+i}",
+         node.vm.network :public_network, ip: "192.168.0.#{169+i}",
             :use_dhcp_assigned_default_route => true, bridge: "eth0"
          node.vm.network :private_network, ip: "192.168.111.#{10+i}"
          node.vm.hostname = "node#{i}"
@@ -32,8 +32,9 @@ Vagrant.configure(2) do |config|
                    ansible.limit = "all"
                    ansible.playbook = "main.yml"
                    ansible.groups = {
-                       "main:children" => ["elasticsearch_master", "logstash"],
-                       "logstash" => ["node[1:4]"],
+                       "main:children" => ["elasticsearch_master", "logstash", "filebeat"],
+                       "logstash" => ["node[4:5]"],
+                       "filebeat" => ["node[1:5]"],
                        "elasticsearch_master" => ["node[1:3]"],
                        "elasticsearch_master:vars" => {
                            "elasticsearch_publish_host" => "{{ ansible_eth1.ipv4.address }}",
