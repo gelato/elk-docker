@@ -1,0 +1,8 @@
+---
+  - hosts: librenms
+    become: True
+    vars_files:
+      - "vars/logstash/logstash.yml"
+    roles:
+      - role: librenms
+        tags: librenms_role

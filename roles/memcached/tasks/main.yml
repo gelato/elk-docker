@@ -1,0 +1,10 @@
+---
+
+  - name: install epel repository
+    yum: name=epel-release state=installed
+
+  - name: Include os-specific variables
+    include_vars: "{{ ansible_os_family }}.yml"
+
+  - include: setup-redhat.yml
+    when: ansible_os_family == "RedHat"

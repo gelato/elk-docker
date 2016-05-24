@@ -1,0 +1,35 @@
+---
+librenms_packages:
+  - wget
+  - cronie
+  - fping
+  - graphviz
+  - graphviz-php
+  - git
+  - httpd
+  - ImageMagick
+  - ipmitool
+  - jwhois
+  - mariadb
+  - mariadb-server
+  - mtr
+  - MySQL-python
+  - nagios-plugins
+  - nagios-plugins-icmp
+  - net-snmp
+  - net-snmp-utils
+  - nmap
+  - php
+  - php-cli
+  - php-curl
+  - php-gd
+  - php-ldap
+  - php-mcrypt
+  - php-mysql
+  - php-pear
+  - php-snmp
+  - rrdtool
+  - subversion
+  - libvirt
+  - policycoreutils-python
+  

@@ -45,4 +45,26 @@ Vagrant.configure(2) do |config|
            end
         end
     end
+  config.vm.define "librenms" do |librenms|
+    librenms.vm.box = "centos/7"
+    librenms.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+    librenms.vm.network :public_network, ip: "192.168.0.111",
+       :use_dhcp_assigned_default_route => true, bridge: "eth0"
+    librenms.vm.network :private_network, ip: "192.168.111.111"
+    librenms.vm.hostname = "librenms"
+    librenms.vm.provider "virtualbox" do |v|
+       v.memory = 2048
+       v.cpus = 1
+     end
+    librenms.vm.provision :ansible do |ansible|
+      #  ansible.verbose = "vvv"
+       ansible.limit = "all"
+       ansible.playbook = "main.yml"
+       ansible.groups = {
+           "main" => ["librenms"],
+           "main:children" => ["memcached"],
+           "memcached" => ["librenms"]
+         }
+    end
+  end
 end

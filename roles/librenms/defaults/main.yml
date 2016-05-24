@@ -1,0 +1,85 @@
+---
+rpmforge_release: 0.5.3-1.el7
+librenms_path: /opt/librenms
+librenms_fping: /usr/sbin/fping
+librenms_user: librenms
+librenms_user_groups: apache
+librenms_git_url: https://github.com/librenms/librenms.git
+librenms_devices: []
+#
+librenms_admin_name: admin
+librenms_admin_pass: L0nl1L0kl1
+librenms_admin_email: sysadmin@zakupka.com
+#
+librenms_web_mouseover: "TRUE"
+#
+librenms_db_name: librenms
+librenms_db_user: librenms
+librenms_db_pass: S3B1qCe9n8Sy
+librenms_db_host: localhost
+#
+librenms_services_enable: yes
+librenms_nagios_plugins: /usr/lib/nagios/plugins
+#
+librenms_auth_mechanism: mysql
+librenms_ldap_version: "3"
+librenms_ldap_server: localhost
+librenms_ldap_port: 389
+librenms_ldap_starttls: require
+librenms_ldap_prefix: "uid="
+librenms_ldap_suffix: ",ou=People,dc=example,dc=com"
+librenms_ldap_group: ""
+librenms_ldap_groupbase: "ou=Group,dc=example,dc=com"
+librenms_ldap_groupmemberattr: "memberUid"
+librenms_ldap_emailattr: "mail"
+librenms_auth_ldap_groups: []
+#
+librenms_email_backend: sendmail
+librenms_email_from: "sysadmin@zakupka.com"
+librenms_email_user: "{{ librenms_user }}"
+librenms_email_sendmail_path: /usr/sbin/sendmail
+librenms_email_smtp_host: smtp.yandex.ru
+librenms_email_smtp_port: 465
+librenms_email_smtp_timeout: 10
+librenms_email_smtp_secure: "ssl"
+librenms_email_smtp_username: "sysadmin@zakupka.com"
+librenms_email_smtp_password: "Z0EmS9lQgcVK"
+#
+librenms_alerts_bgp_whitelist: []
+librenms_alerts_port_ifdown: "FALSE"
+#
+librenms_snmp_communities:
+  - public
+librenms_snmp_max_rep: 20
+librenms_snmpbulkwalk: "/usr/bin/snmpbulkwalk -Cr{{librenms_snmp_max_rep}}"
+#
+librenms_pollers_disabled: []
+#
+librenms_rancid_configs: []
+#
+librenms_collectd_dir: /var/lib/collectd/rrd
+librenms_collectd_sock: unix:///var/run/collectd.sock
+#
+librenms_smokeping_dir: /var/lib/smokeping
+librenms_smokeping_pings: 20
+#
+librenms_rrdcached_socket: unix:/var/run/rrdcached.sock
+librenms_rrdcached_journal: /var/lib/rrdcached/journal/
+librenms_rrdcached_pidfile: /var/run/rrdcached.pid
+librenms_rrdcached_wtimeout: 1800
+librenms_rrdcached_delay: 1800
+librenms_rrdcached_ftimeout: 3600
+apache_group: apache
+#
+librenms_directories:
+  - { path: /opt/librenms/logs, owner: apache, group: apache, mode: "0755" }
+  - { path: /opt/librenms/rrd, owner: librenms, group: librenms, mode: "0775" }
+librenms_poller_threads: 16
+librenms_cron_jobs:
+  - "33  */6 * * *  librenms  /opt/librenms/discovery.php -h all > /dev/null 2>&1"
+  - "*/5 *   * * *  librenms  /opt/librenms/discovery.php -h new > /dev/null 2>&1"
+  - "*/5 *   * * *  librenms  /opt/librenms/cronic /opt/librenms/poller-wrapper.py {{ librenms_poller_threads }}"
+  - "15  6   * * *  librenms  /opt/librenms/daily.sh > /dev/null 2>&1"
+librenms_pear_modules:
+  - Net_IPv4-1.3.4
+  - Net_IPv6-1.2.2b2

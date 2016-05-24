@@ -1,0 +1,14 @@
+---
+- name: enable seboolean httpd_can_network_connect
+  seboolean: name=httpd_can_network_connect state=on persistent=yes
+
+- name: manage selinux contexts
+#  when: not librenms_stat.stat.exists
+  command: semanage fcontext -a -t "{{ item.setype }}" "{{ item.path }}"
+  with_items:
+    - { path: "{{ librenms_rrdcached_socket }}", setype: httpd_sys_rw_content_t }
+    - { path: "{{ librenms_path }}/rrd(/.*)?",   setype: httpd_sys_rw_content_t }
+    - { path: "{{ librenms_path }}/log(/.*)?",   setype: httpd_log_t }
+
+- name: enable seboolean httpd_can_sendmail
+  seboolean: name=httpd_can_sendmail state=on persistent=yes

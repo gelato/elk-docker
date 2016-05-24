@@ -1,0 +1,118 @@
+<?php
+
+# {{ ansible_managed }}
+## Have a look in includes/defaults.inc.php for examples of settings you can set here. DO NOT EDIT defaults.inc.php!
+
+### Database config
+$config['db_host'] = '{{ librenms_db_host }}';
+$config['db_user'] = '{{ librenms_db_user }}';
+$config['db_pass'] = '{{ librenms_db_pass }}';
+$config['db_name'] = '{{ librenms_db_name }}';
+$config['db']['extension'] = 'mysqli';// mysql or mysqli
+
+### Memcached config - We use this to store realtime usage
+$config['memcached']['enable']  = TRUE;
+$config['memcached']['host']    = 'localhost';
+$config['memcached']['port']    = 11211;
+
+// This is the user LibreNMS will run as
+// Please ensure this user is created and has the correct permissions to your install
+$config['user'] = "{{ librenms_user }}";
+
+## Locations - it is recommended to keep the default
+$config['install_dir']  = "{{ librenms_path }}";
+
+### This should *only* be set if you want to *force* a particular hostname/port
+### It will prevent the web interface being usable form any other hostname
+#$config['base_url']        = "http://librenms.company.com";
+
+### Enable this to use rrdcached. Be sure rrd_dir is within the rrdcached dir
+### and that your web server has permission to talk to rrdcached.
+$config['rrdcached'] = "{{ librenms_rrdcached_socket }}";
+
+# ICMP
+$config['fping'] = "{{ librenms_fping }}";
+
+# SNMP
+$config['snmpbulkwalk'] = "{{ librenms_snmpbulkwalk }}";
+$config['snmp']['community'] = array("{{ '", "'.join(librenms_snmp_communities) }}");
+
+# POLLER
+{% for poller in librenms_pollers_disabled %}
+$config['poller_modules']['{{ poller }}'] = 0;
+{% endfor %}
+
+# RANCID
+{% for path in librenms_rancid_configs %}
+$config['rancid_configs'][] = "{{ path }}";
+{% endfor %}
+
+{% if librenms_collectd_dir %}
+# COLLECTD
+$config['collectd_dir']     = "{{ librenms_collectd_dir }}";
+$config['collectd_sock']    = "{{ librenms_collectd_sock }}";
+{% endif %}
+
+{% if librenms_smokeping_dir %}
+# SMOKEPING
+$config['smokeping']['dir']   = "{{ librenms_smokeping_dir }}";
+$config['smokeping']['pings'] = {{ librenms_smokeping_pings }};
+{% endif %}
+
+# SERVICES
+$config['show_services']  = {{ librenms_services_enable|int }};
+$config['nagios_plugins'] = "{{ librenms_nagios_plugins }}";
+
+# WEB
+$config['web_mouseover'] = {{ librenms_web_mouseover }};
+
+### AUTHENTICATION
+$config['auth_mechanism'] = "{{ librenms_auth_mechanism }}"; # default, other options: ldap, http-auth
+#$config['http_auth_guest'] = "guest"; # remember to configure this user if you use http-auth
+
+$config['auth_ldap_version']   = {{ librenms_ldap_version }};
+$config['auth_ldap_server']    = "{{ librenms_ldap_server }}";
+$config['auth_ldap_port']      = "{{ librenms_ldap_port }}";
+$config['auth_ldap_starttls']  = "{{ librenms_ldap_starttls }}";
+$config['auth_ldap_prefix']    = "{{ librenms_ldap_prefix }}";
+$config['auth_ldap_suffix']    = "{{ librenms_ldap_suffix }}";
+$config['auth_ldap_group']     = "{{ librenms_ldap_group }}";
+$config['auth_ldap_emailattr'] = "{{ librenms_ldap_emailattr }}";
+
+$config['auth_ldap_groupbase']       = "{{ librenms_ldap_groupbase }}";
+$config['auth_ldap_groupmemberattr'] = "{{ librenms_ldap_groupmemberattr }}";
+{% for group in librenms_auth_ldap_groups %}
+$config['auth_ldap_groups']['{{ group.name }}']['level'] = {{ group.level }};
+{% endfor %}
+
+### ALERT
+$config['email_backend']       = "{{ librenms_email_backend }}";
+$config['email_from']          = "{{ librenms_email_from }}";
+$config['email_user']          = "{{ librenms_email_user }}";
+$config['email_sendmail_path'] = "{{ librenms_email_sendmail_path }}";
+$config['email_smtp_host']     = "{{ librenms_email_smtp_host }}";
+$config['email_smtp_port']     = "{{ librenms_email_smtp_port }}";
+$config['email_smtp_timeout']  = "{{ librenms_email_smtp_timeout }}";
+$config['email_smtp_secure']   = "{{ librenms_email_smtp_secure }}";
+$config['email_smtp_username'] = "{{ librenms_email_smtp_username }}";
+$config['email_smtp_password'] = "{{ librenms_email_smtp_password }}";
+
+{% if librenms_alerts_bgp_whitelist %}
+{% for asn in librenms_alerts_bgp_whitelist %}
+$config['alerts']['bgp']['whitelist'][]    = "{{ asn }}";
+{% endfor %}
+{% endif %}
+
+### List of RFC1918 networks to allow scanning-based discovery
+#$config['nets'][] = "10.0.0.0/8";
+#$config['nets'][] = "172.16.0.0/12";
+#$config['nets'][] = "192.168.0.0/16";
+
+# following is necessary for poller-wrapper
+# poller-wrapper is released public domain
+$config['poller-wrapper']['alerter'] = FALSE;
+# Uncomment the next line to disable daily updates
+#$config['update'] = 0;
+
+# Uncomment to submit callback stats via proxy
+#$config['callback_proxy'] = "hostname:port";
