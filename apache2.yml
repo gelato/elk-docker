@@ -1,0 +1,9 @@
+---
+
+  - hosts: apache2
+    become: True
+    vars_files:
+      - "vars/apache2/apache2.yml"
+    roles:
+      - role: apache2
+        tags: apache2_role

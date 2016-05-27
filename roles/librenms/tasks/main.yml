@@ -57,24 +57,19 @@
       owner: "{{ librenms_user }}"
       group: "{{ librenms_user }}"
       backup: yes
-    notify:
-      - restart apache
+    register: librenms_installed
 
   - name: Include MariaDB configuration
     include: mysqlcfg.yml
-    when: librenms_stat.stat.exists
-
-  - name: Include RRDCached configuration
-    include: rrdcachedcfg.yml
-    when: librenms_stat.stat.exists
+    when: librenms_installed is defined
 
   - name: Include apache configuration
-    include: apachecfg.yml
-    when: librenms_stat.stat.exists
+    include: apachecfg-{{ ansible_os_family }}.yml
+    when: librenms_installed is defined
 
   - name: Include devices addition tasks
     include: devices.yml
-    when: librenms_stat.stat.exists
+    when: librenms_installed is defined
 
   - name: template librenms crontab
     template:
@@ -87,19 +82,19 @@
 
   - name: Enable and start snmpd
     service: name=snmpd enabled=yes state=started
-    when: librenms_stat.stat.exists
+    when: librenms_installed is defined
 
   - name: Edit snmp config
     lineinfile:
       dest: /etc/snmp/snmpd.conf
       line: rocommunity public 127.0.0.1
+    notify:
+      - validate install
+      - discover localhost
 
   - name: Create librenms admin user
     shell: >-
       chdir={{ librenms_path }}
       php adduser.php {{ librenms_admin_name }} {{ librenms_admin_pass }} 10 {{ librenms_admin_email }}
-    when: librenms_stat.stat.exists
+    when: librenms_installed is defined
     changed_when: false
-    notify:
-      - validate_install
-      - discover localhost

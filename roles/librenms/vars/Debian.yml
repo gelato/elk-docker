@@ -1,0 +1,9 @@
+---
+
+  librenms_user_groups: www-data
+  apache_group: www-data
+  librenms_directories:
+    - { path: /opt/librenms/logs, owner: www-data, group: www-data, mode: "0755" }
+    - { path: /opt/librenms/rrd, owner: librenms, group: librenms, mode: "0775" }
+  librenms_nagios_plugins_loc: /usr/lib/nagios/plugins
+  librenms_mtr_loc: /usr/bin/mtr

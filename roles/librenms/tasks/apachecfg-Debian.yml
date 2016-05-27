@@ -1,0 +1,23 @@
+---
+
+  - name: Create librenms apache logs
+    file:
+      path: "{{ item }}"
+      state: touch
+      owner: librenms
+      group: apache
+      mode: 0644
+    changed_when: false
+    with_items:
+      - "{{ librenms_path }}/logs/access_log"
+      - "{{ librenms_path }}/logs/error_log"
+
+  - name: Template apache configuration
+    template:
+      src: librenms.conf.j2
+      dest: /etc/apache2/sites-enabled/librenms.conf
+      owner: www-data
+      group: www-data
+      backup: yes
+    notify:
+      - restart apache

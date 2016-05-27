@@ -62,8 +62,9 @@ Vagrant.configure(2) do |config|
        ansible.playbook = "main.yml"
        ansible.groups = {
            "main" => ["librenms"],
-           "main:children" => ["memcached"],
-           "memcached" => ["librenms"]
+           "main:children" => ["memcached", "apache2"],
+           "memcached" => ["librenms"],
+           "apache2" => ["librenms"]
          }
     end
   end
