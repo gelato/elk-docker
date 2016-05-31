@@ -24,16 +24,14 @@ filebeat_prospectors:
     input_type: 'log'
     document_type: 'linux-syslog'
     prospector_fields:
-      file-type: syslog
-      full_parsing: yes
+      file-name: syslog
   - paths:
       - '/var/log/auth.log'
     encoding: 'plain'
     input_type: 'log'
     document_type: 'linux-authlog'
     prospector_fields:
-      file-file: bu1
-      ku-ku: nu1
+      file-name: auth.log
 
 filebeat_outputs:
   - name: logstash

@@ -1,4 +1,4 @@
-{{ ansible_managed }}
+#{{ ansible_managed }}
 filebeat:
 
   prospectors:
@@ -51,12 +51,12 @@ shipper:
   # The name of the shipper that publishes the network data. It can be used to group
   # all the transactions sent by a single shipper in the web interface.
   # If this options is not defined, the hostname is used.
-  name: fb_shipper
+  #name: fb_shipper
 
   # The tags of the shipper are included in their own field with each
   # transaction published. Tags make it easy to group servers by different
   # logical properties.
-  tags: ["service-X", "web-tier"]
+  #tags: ["service-X", "web-tier"]
 
   # Uncomment the following if you want to ignore transactions created
   # by the server on which the shipper is installed. This option is useful
@@ -77,9 +77,9 @@ shipper:
 
   # Configure local GeoIP database support.
   # If no paths are not configured geoip is disabled.
-  #geoip:
-    #paths:
-    #  - "/usr/share/GeoIP/GeoLiteCity.dat"
+  geoip:
+    paths:
+     - "/usr/share/GeoIP/GeoIP.dat"
     #  - "/usr/local/var/GeoIP/GeoLiteCity.dat"
 
 logging:
@@ -92,16 +92,16 @@ logging:
     rotateeverybytes: 10485760 # = 10MB
   level: error
 
-  # General filebeat configuration options
-  #
-  # Event count spool threshold - forces network flush if exceeded
-  spool_size: {{ filebeat_spool_size }}
+# General filebeat configuration options
+#
+# Event count spool threshold - forces network flush if exceeded
+spool_size: {{ filebeat_spool_size }}
 
-  # Defines how often the spooler is flushed. After idle_timeout the spooler is
-  # Flush even though spool_size is not reached.
-  idle_timeout: {{ filebeat_idle_timeout }}
+# Defines how often the spooler is flushed. After idle_timeout the spooler is
+# Flush even though spool_size is not reached.
+idle_timeout: {{ filebeat_idle_timeout }}
 
-  # Name of the registry file. Per default it is put in the current working
-  # directory. In case the working directory is changed after when running
-  # filebeat again, indexing starts from the beginning again.
-  registry_file: {{ filebeat_config_registry_file }}
+# Name of the registry file. Per default it is put in the current working
+# directory. In case the working directory is changed after when running
+# filebeat again, indexing starts from the beginning again.
+registry_file: {{ filebeat_config_registry_file }}
