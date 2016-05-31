@@ -1,7 +1,4 @@
 ---
 
     timezone: "Europe/Simferopol"
-    prospector_fields:
-      123: 12
-      321: 21
-      444: 44
+    

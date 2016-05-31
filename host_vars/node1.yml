@@ -1,6 +1,4 @@
 ---
 
     timezone: "Europe/Simferopol"
-    prospector_fields:
-      file-file: bu1
-      ku-ku: nu1
+    

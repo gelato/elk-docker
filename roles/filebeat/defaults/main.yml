@@ -18,15 +18,22 @@ filebeat_config_registry_file: "/var/lib/filebeat/registry"
 
 
 filebeat_prospectors:
-  - paths:
+  - syslog:
       - '/var/log/syslog'
+    encoding: 'plain'
+    input_type: 'log'
+    document_type: 'linux-syslog'
+    prospector_fields:
+      file-type: syslog
+      full_parsing: yes
+  - authlog:
       - '/var/log/auth.log'
     encoding: 'plain'
     input_type: 'log'
-    document_type: 'log'
-#  - paths:
-#      - '/opt/myapp/var/*.log'
-#    document_type: 'my_app_log'
+    document_type: 'linux-authlog'
+    prospector_fields:
+      file-file: bu1
+      ku-ku: nu1
 
 filebeat_outputs:
   - name: logstash

@@ -12,7 +12,7 @@ filebeat:
      input_type: {{ item.input_type|default ('log') }}
      document_type: {{ item.document_type|default ('log') }}
      fields:
-     {% for key, item in prospector_fields.iteritems() %}
+     {% for key, item in item.prospector_fields.iteritems() %}
     {{ key }}: {{ item }}
      {% endfor %}
 
