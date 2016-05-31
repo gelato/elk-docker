@@ -18,7 +18,7 @@ filebeat_config_registry_file: "/var/lib/filebeat/registry"
 
 
 filebeat_prospectors:
-  - syslog:
+  - paths:
       - '/var/log/syslog'
     encoding: 'plain'
     input_type: 'log'
@@ -26,7 +26,7 @@ filebeat_prospectors:
     prospector_fields:
       file-type: syslog
       full_parsing: yes
-  - authlog:
+  - paths:
       - '/var/log/auth.log'
     encoding: 'plain'
     input_type: 'log'
