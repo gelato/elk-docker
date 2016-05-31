@@ -55,4 +55,8 @@ filebeat_enable_tls: no
 
 filebeat_certificates_dir: /etc/ssl/certs/tls/filebeat
 
+prospector_fields:
+    default1: nonedefault
+    default2: none1
+
 # vi:ts=2:sw=2:et:ft=yaml

@@ -1,21 +1,36 @@
 ---
-    logstash_combined_configs:
-        - syslog
-        - authlog
-        - nginx
-        - test
 
-    logstash_patterns:
-        - grok-patterns
-        - linux-syslog
-        - nginx
+  logstash_combined_configs:
+    - fb-reciever
 
-    outputs_to_install:
-        - output-authlog
-        - output-syslog
-        - output-nginx
-        - test-output
+  outputs_to_install:
+    - fb-reciever-output
 
-    timezone: "Europe/Simferopol"
+  logstash_patterns:
+      - grok-patterns
+      - linux-syslog
+      - nginx
 
-    logstash_endpoint_host_ip: "192.168.0.170:9200"
+  timezone: "Europe/Simferopol"
+
+  logstash_endpoint_host_ip: "192.168.0.170:9200"
+    # logstash_combined_configs:
+    #     - syslog
+    #     - authlog
+    #     - nginx
+    #     - test
+    #
+    # logstash_patterns:
+    #     - grok-patterns
+    #     - linux-syslog
+    #     - nginx
+    #
+    # outputs_to_install:
+    #     - output-authlog
+    #     - output-syslog
+    #     - output-nginx
+    #     - test-output
+    #
+    # timezone: "Europe/Simferopol"
+    #
+    # logstash_endpoint_host_ip: "192.168.0.170:9200"

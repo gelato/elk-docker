@@ -11,6 +11,10 @@ filebeat:
      encoding: {{ item.encoding|default ('plain') }}
      input_type: {{ item.input_type|default ('log') }}
      document_type: {{ item.document_type|default ('log') }}
+     fields:
+     {% for key, item in prospector_fields.iteritems() %}
+    {{ key }}: {{ item }}
+     {% endfor %}
 
 {% endfor %}
 
@@ -29,7 +33,7 @@ output:
   {% endif %}
 
   {% if item.name == "file" %}
-  
+
   {{ item.name }}:
     path: {{ item.path }}
     filename: {{ item.filename }}
@@ -47,12 +51,12 @@ shipper:
   # The name of the shipper that publishes the network data. It can be used to group
   # all the transactions sent by a single shipper in the web interface.
   # If this options is not defined, the hostname is used.
-  #name:
+  name: fb_shipper
 
   # The tags of the shipper are included in their own field with each
   # transaction published. Tags make it easy to group servers by different
   # logical properties.
-  #tags: ["service-X", "web-tier"]
+  tags: ["service-X", "web-tier"]
 
   # Uncomment the following if you want to ignore transactions created
   # by the server on which the shipper is installed. This option is useful

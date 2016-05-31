@@ -8,5 +8,7 @@
       mode: 0640
     notify:
       - filebeat restart
+    tags:
+      - filebeat_config
 
 # vi:ts=2:sw=2:et:ft=yaml

@@ -8,7 +8,8 @@
   tags: filebeat_install
 
 - include: config.yml
-  tags: filebeat_config
+  tags:
+    - filebeat_config
 
 - name: start and enable filebeat
   service: name=filebeat state=started enabled=True

@@ -32,7 +32,7 @@ Vagrant.configure(2) do |config|
                    ansible.limit = "all"
                    ansible.playbook = "main.yml"
                    ansible.groups = {
-                       "main:children" => ["elasticsearch_master", "logstash", "filebeat"],
+                       "main:children" => ["elasticsearch_master", "logstash", "filebeat", "librenms"],
                        "logstash" => ["node[4:5]"],
                        "filebeat" => ["node[1:5]"],
                        "elasticsearch_master" => ["node[1:3]"],
