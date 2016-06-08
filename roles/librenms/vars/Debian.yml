@@ -7,3 +7,29 @@
     - { path: /opt/librenms/rrd, owner: librenms, group: librenms, mode: "0775" }
   librenms_nagios_plugins_loc: /usr/lib/nagios/plugins
   librenms_mtr_loc: /usr/bin/mtr
+  librenms_packages:
+    - mariadb-client
+    - mariadb-server
+    - libapache2-mod-php5
+    - php5-cli
+    - php5-mysql
+    - php5-gd
+    - php5-snmp
+    - php-pear
+    - php5-curl
+    - snmp
+    - graphviz
+    - php5-mcrypt
+    - php5-json
+    - apache2
+    - fping
+    - imagemagick
+    - whois
+    - mtr-tiny
+    - nmap
+    - python-mysqldb
+    - snmpd
+    - php-net-ipv4
+    - php-net-ipv6
+    - rrdtool
+    - git

@@ -1,0 +1,18 @@
+---
+
+  - name: install prerequisites
+    yum: name={{ item }} state=installed
+    with_items: "{{ librenms_debian_packages }}"
+
+  - name: enable php modules
+    command: php5enmod mcrypt
+
+  - name: enable apache site
+    command: a2ensite librenms.conf
+
+  - name: disable apache site
+    command: a2dissite 000-default
+
+  - name: enable apache modules
+    command: a2enmod rewrite
+    notify: restart apache

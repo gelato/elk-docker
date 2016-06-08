@@ -35,11 +35,11 @@ $config['enable_footer'] = 1;
 
 ### Discovery
 $config['show_services']           = 1;  # Enable Services on menu
-$config['autodiscovery']['xdp']            = TRUE;
-$config['autodiscovery']['ospf']           = TRUE;
-$config['autodiscovery']['bgp']            = TRUE;
-$config['autodiscovery']['snmpscan']       = TRUE;
-$config['discover_services']               = TRUE;
+$config['autodiscovery']['xdp']            = false;
+$config['autodiscovery']['ospf']           = false;
+$config['autodiscovery']['bgp']            = false;
+$config['autodiscovery']['snmpscan']       = true;
+$config['discover_services']               = true;
 $config['autodiscovery']['nets-exclude'][] = "169.254.0.0/16";
 $config['autodiscovery']['nets-exclude'][] = "224.0.0.0/4";
 $config['autodiscovery']['nets-exclude'][] = "240.0.0.0/4";

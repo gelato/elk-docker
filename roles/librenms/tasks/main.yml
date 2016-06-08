@@ -6,6 +6,9 @@
   - include: setup-redhat.yml
     when: ansible_os_family == "RedHat"
 
+  - include: setup-debian.yml
+    when: ansible_os_family == "Debian"
+
   - name: Include selinux tasks
     include: selinux.yml
     when: ansible_selinux.status is defined and ansible_selinux.status == 'permissive'
