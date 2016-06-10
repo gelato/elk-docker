@@ -29,18 +29,9 @@ Vagrant.configure(2) do |config|
            if i == $nodes
                node.vm.provision :ansible do |ansible|
                   #  ansible.verbose = "vvv"
-                   ansible.limit = "all"
+                   ansible.limit = "main"
                    ansible.playbook = "main.yml"
-                   ansible.groups = {
-                       "main:children" => ["elasticsearch_master", "logstash", "filebeat", "librenms"],
-                       "logstash" => ["node[4:5]"],
-                       "filebeat" => ["node[1:5]"],
-                       "elasticsearch_master" => ["node[1:3]"],
-                       "elasticsearch_master:vars" => {
-                           "elasticsearch_publish_host" => "{{ ansible_eth1.ipv4.address }}",
-                           "elasticsearch_discovery_zen_ping_unicast_hosts" => "{{ hostvars | fetchlistfromdict(groups.elasticsearch_master) | map(attribute='ansible_eth1.ipv4') | map(attribute='address') | list }}"
-                       }
-                    }
+                   ansible.inventory_path = "./elastic-inventory.ini"
                end
            end
         end
@@ -60,12 +51,7 @@ Vagrant.configure(2) do |config|
       #  ansible.verbose = "vvv"
        ansible.limit = "all"
        ansible.playbook = "main.yml"
-       ansible.groups = {
-           "main" => ["librenms"],
-           "main:children" => ["memcached", "apache2"],
-           "memcached" => ["librenms"],
-           "apache2" => ["librenms"]
-         }
+       ansible.inventory_path = "./elastic-inventory.ini"
     end
   end
 end

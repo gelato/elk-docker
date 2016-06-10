@@ -7,3 +7,4 @@
   - include: filebeat.yml
   - include: librenms.yml
   - include: memcached.yml
+  - include: rabbitmq.yml

@@ -1,18 +1,23 @@
 input {
-    file {
-        type => "nginx-access"
-        path => "/home/vagrant/nginx_http.access.log"
-        start_position => "beginning"
-        sincedb_path => "NUL"
-        ignore_older => 0
-    }
-    file {
-        type => "nginx-error"
-        path => "/home/vagrant/nginx_http.error.log"
-        start_position => "beginning"
-        sincedb_path => "NUL"
-        ignore_older => 0
-    }
+      rabbitmq {
+        host => "{{ rabbitmq_endpoint }}"
+        subscription_retry_interval_seconds => 5
+        ack => "true"
+        arguments => "{"x-ha-policy" => "all"}"
+        auto_delete => "false"
+        automatic_recovery => "true"
+        codec => "json"
+        connect_retry_interval => 1
+        connection_timeout => 1000
+        durable => "true"
+        exchange => "logstash_reciever"
+        heartbeat => 1
+        key => "{{ logstash_rabbitmq_routing_key }}"
+        metadata_enabled => "{{ logstash_rabbitmq_send_metadata }}"
+        user => "{{ logstash_rabbitmq_output_user }}"
+        password => "{{ logstash_rabbitmq_output_password }}"
+        queue => "logstash-nginx"
+      }
 }
 
 filter {

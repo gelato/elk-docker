@@ -1,3 +1,39 @@
 ---
+  #Elasticsearch + FB + Logstash filter + RabbitMQ
+  timezone: "Europe/Simferopol"
 
-    timezone: "Europe/Simferopol"
+  filebeat_prospectors:
+    - paths:
+        - '/var/log/syslog'
+      encoding: 'plain'
+      input_type: 'log'
+      document_type: 'linux-syslog'
+      prospector_fields:
+        file-name: syslog
+    - paths:
+        - '/var/log/auth.log'
+      encoding: 'plain'
+      input_type: 'log'
+      document_type: 'linux-authlog'
+      prospector_fields:
+        file-name: auth.log
+
+  logstash_combined_configs:
+      - syslog
+      - authlog
+      - nginx
+      # - test
+
+  logstash_patterns:
+      - grok-patterns
+      - linux-syslog
+      - nginx
+
+  outputs_to_install:
+      - output-authlog
+      - output-syslog
+      - output-nginx
+      # - test-output
+
+  logstash_endpoint_host_ip: "192.168.0.170:9200"
+  rabbitmq_endpoint: "192.168.0.170"
