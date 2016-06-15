@@ -1,6 +1,6 @@
 ---
   #Elasticsearch + FB + Logstash filter + RabbitMQ
-  timezone: "Europe/Simferopol"
+  timezone: Europe/Simferopol
 
   filebeat_prospectors:
     - paths:

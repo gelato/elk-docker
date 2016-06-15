@@ -1,6 +1,6 @@
 ---
   #FB + Logstash producer
-  timezone: "Europe/Simferopol"
+  timezone: Europe/Simferopol
 
   filebeat_prospectors:
     - paths:

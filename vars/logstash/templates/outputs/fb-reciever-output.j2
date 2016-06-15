@@ -1,18 +1,18 @@
 output {
-  stdout { codec => rubydebug }
   rabbitmq {
     exchange => "logstash_reciever"
     exchange_type => "{{ logstash_rabbitmq_exchange_type }}"
-    host => ["{{ logstash_endpoint_host_ip }}"]
-    automatic_recovery => "true"
+    host => "{{ rabbitmq_endpoint }}"
+    port => 5672
+    automatic_recovery => true
     codec => "json"
-    durable => "true"
-    heartbeat => 1
-    key => "{{ logstash_rabbitmq_routing_key }}"
-    password => "{{ logstash_rabbitmq_output_password }}"
+    durable => true
+    key => "logstash"
     user => "{{ logstash_rabbitmq_output_user }}"
-    persistent => "{{ logstash_rabbitmq_output_persistent }}"
-    workers => "{{ logstash_rabbitmq_output_workers }}"
+    password => "{{ logstash_rabbitmq_output_password }}"
+    persistent => "{{ logstash_rabbitmq_output_persistent | lower() }}"
+    workers => {{ logstash_rabbitmq_output_workers }}
     heartbeat => 1
+    vhost => "logstash"
   }
 }

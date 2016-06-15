@@ -1,29 +1,25 @@
-# input {
-#     file {
-#         type => "linux-authlog"
-#         path => ["/var/log/auth.log"]
-#     }
-# }
-
 input {
     rabbitmq {
       host => "{{ rabbitmq_endpoint }}"
       subscription_retry_interval_seconds => 5
       ack => "true"
-      arguments => "{"x-ha-policy" => "all"}"
+      arguments => { "x-ha-policy" => "all" }
       auto_delete => "false"
       automatic_recovery => "true"
       codec => "json"
       connect_retry_interval => 1
-      connection_timeout => 1000
+      connection_timeout => 10000
       durable => "true"
       exchange => "logstash_reciever"
       heartbeat => 1
-      key => "{{ logstash_rabbitmq_routing_key }}"
-      metadata_enabled => "{{ logstash_rabbitmq_send_metadata }}"
+      key => "logstash-authlog"
+      metadata_enabled => "{{ logstash_rabbitmq_send_metadata | lower() }}"
       user => "{{ logstash_rabbitmq_output_user }}"
       password => "{{ logstash_rabbitmq_output_password }}"
       queue => "logstash-authlog"
+      threads => 3
+      prefetch_count => 50
+      vhost => "logstash"
     }
 }
 

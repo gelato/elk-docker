@@ -3,7 +3,7 @@ input {
         host => "{{ rabbitmq_endpoint }}"
         subscription_retry_interval_seconds => 5
         ack => "true"
-        arguments => "{"x-ha-policy" => "all"}"
+        arguments => { "x-ha-policy" => "all" }
         auto_delete => "false"
         automatic_recovery => "true"
         codec => "json"
@@ -12,11 +12,14 @@ input {
         durable => "true"
         exchange => "logstash_reciever"
         heartbeat => 1
-        key => "{{ logstash_rabbitmq_routing_key }}"
-        metadata_enabled => "{{ logstash_rabbitmq_send_metadata }}"
+        key => "logstash-nginx"
+        metadata_enabled => "{{ logstash_rabbitmq_send_metadata | lower() }}"
         user => "{{ logstash_rabbitmq_output_user }}"
         password => "{{ logstash_rabbitmq_output_password }}"
         queue => "logstash-nginx"
+        threads => 3
+        prefetch_count => 50
+        vhost => "logstash"
       }
 }
 

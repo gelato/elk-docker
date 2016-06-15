@@ -1,10 +1,11 @@
 ---
+
   - hosts: main
     become: True
 
   - include: elasticsearch.yml
-  - include: logstash.yml
   - include: filebeat.yml
   - include: librenms.yml
   - include: memcached.yml
   - include: rabbitmq.yml
+  - include: logstash.yml

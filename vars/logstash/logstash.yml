@@ -3,13 +3,13 @@
     logstash_config_templates:  vars/logstash/templates/configs
     logstash_pattern_templates: vars/logstash/templates/patterns
     logstash_workers: 5
+    update_plugins: false
     #From logstash to rabbitmq
     logstash_rabbitmq_exchange_type: "direct"
-    logstash_rabbitmq_routing_key: "logstash"
     logstash_rabbitmq_output_user: "logstash"
     logstash_rabbitmq_output_password: "logmqstash"
-    logstash_rabbitmq_output_persistent: "true"
+    logstash_rabbitmq_output_persistent: true
     logstash_rabbitmq_output_workers: 5
     #From rabbitmq to logstash
     rabbitmq_endpoint: "192.168.0.170"
-    logstash_rabbitmq_send_metadata: "false"
+    logstash_rabbitmq_send_metadata: false

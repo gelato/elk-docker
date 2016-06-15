@@ -23,7 +23,7 @@
       owner: rabbitmq
       group: rabbitmq
       mode: 0400
-      backup: yes #backing up in case the need to recover
+      backup: yes
   #  when: inventory_hostname != "{{ rabbitmq_master }}"
 
   - name: rabbitmq_clustering | restarting rabbitmq-server on master
@@ -37,30 +37,30 @@
     register: cluster_master
     when: inventory_hostname == "{{ rabbitmq_master }}"
 
-  - name: rabbitmq_clustering | sending sigterm to any running rabbitmq processes
-    shell: pkill -u rabbitmq || true
-    when: inventory_hostname != "{{ rabbitmq_master }}"
+  # - name: rabbitmq_clustering | sending sigterm to any running rabbitmq processes
+  #   shell: pkill -u rabbitmq || true
+  #   when: inventory_hostname != "{{ rabbitmq_master }}"
 
-  - name: rabbitmq_clustering | restarting rabbitmq-server
+  - name: rabbitmq_clustering | restarting rabbitmq-server on slaves
     service:
       name: rabbitmq-server
       state: restarted
     when: inventory_hostname != "{{ rabbitmq_master }}"
 
-  - name: rabbitmq_clustering | stopping rabbitmq app
+  - name: rabbitmq_clustering | stopping rabbitmq app on slaves
     command: rabbitmqctl stop_app
     when: inventory_hostname != "{{ rabbitmq_master }}"
 
-  - name: rabbitmq_clustering | resetting rabbitmq app
+  - name: rabbitmq_clustering | resetting rabbitmq app on slaves
     command: rabbitmqctl reset
     when: inventory_hostname != "{{ rabbitmq_master }}"
 
-  - name: rabbitmq_clustering | joining rabbitmq cluster
+  - name: rabbitmq_clustering | joining rabbitmq cluster on slaves
     command: rabbitmqctl join_cluster 'rabbit@{{ rabbitmq_master }}'
     register: cluster_joined
     when: inventory_hostname != "{{ rabbitmq_master }}"
 
-  - name: rabbitmq_clustering | starting rabbitmq app
+  - name: rabbitmq_clustering | starting rabbitmq app on slaves
     command: rabbitmqctl start_app
     when: inventory_hostname != "{{ rabbitmq_master }}"
 
@@ -68,6 +68,4 @@
     file:
       path: /etc/rabbitmq/clustered
       state: touch
-    when: cluster_master.changed or cluster_joined.changed
-
-  
+    when: cluster_joined.changed

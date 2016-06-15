@@ -1,4 +1,4 @@
-- name: Set Time Zone on Ubuntu <= 15.10
+# - name: Set Time Zone on Ubuntu <= 15.10
   tasks:
     - name: Set timezone variables
       copy: >
@@ -13,3 +13,6 @@
   handlers:
     - name: update timezone
       command: dpkg-reconfigure --frontend noninteractive tzdata
+# - name: Set timezone to UTC
+#   when: ansible_date_time.tz != '{{ timezone }}'
+#   command: timedatectl set-timezone {{ timezone }}

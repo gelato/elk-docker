@@ -49,9 +49,11 @@ Vagrant.configure(2) do |config|
      end
     librenms.vm.provision :ansible do |ansible|
       #  ansible.verbose = "vvv"
-       ansible.limit = "all"
+       ansible.limit = "service"
        ansible.playbook = "main.yml"
-       ansible.inventory_path = "./elastic-inventory.ini"
+       ansible.groups = {
+         "service" => ["librenms"]
+       }
     end
   end
 end

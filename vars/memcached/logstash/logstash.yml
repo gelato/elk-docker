@@ -1,5 +1,0 @@
----
-    logstash_output_templates: vars/logstash/templates/outputs
-    logstash_config_templates:  vars/logstash/templates/configs
-    logstash_pattern_templates: vars/logstash/templates/patterns
-    logstash_workers: 5

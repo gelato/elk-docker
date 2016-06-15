@@ -1,17 +1,22 @@
 ---
-- include: install/main.yml
-- include: configuration.yml
-- include: plugins.yml
-- include: vhost.yml
-- include: federation.yml
-  when: rabbitmq_federation
 
-- name: checking to see if already clustered
-  stat: path=/etc/rabbitmq/clustered
-  register: clustered
+  - include: install/main.yml
+  - include: configuration.yml
+  - include: plugins.yml
 
-- include: clustering.yml
-  when: enable_rabbitmq_clustering and (clustered.stat.exists != True)
+  - include: federation.yml
+    when: rabbitmq_federation
 
-- include: ha_config.yml
-  when: config_rabbitmq_ha and enable_rabbitmq_clustering
+  - name: checking to see if already clustered
+    stat: path=/etc/rabbitmq/clustered
+    register: clustered
+
+  - include: clustering.yml
+    when: >
+     enable_rabbitmq_clustering and (clustered.stat.exists != True)
+      and (inventory_hostname != "{{ rabbitmq_master }}")
+
+  - include: vhost.yml
+
+  - include: ha_config.yml
+    when: config_rabbitmq_ha and enable_rabbitmq_clustering
