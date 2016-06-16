@@ -4,7 +4,7 @@ output {
     if [type] == "linux-syslog" {
         elasticsearch {
              workers => {{ logstash_workers }}
-             hosts => ["{{ logstash_endpoint_host_ip }}"]
+             hosts => {{ logstash_endpoint_host_ip | to_json() }}
              index => "{{ logstash_index_name }}"
              document_type => "linux-syslog"
              }

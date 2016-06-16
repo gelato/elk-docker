@@ -2,24 +2,24 @@ input {
     rabbitmq {
       host => "{{ rabbitmq_endpoint }}"
       subscription_retry_interval_seconds => 5
-      ack => "true"
+      ack => true
       arguments => { "x-ha-policy" => "all" }
-      auto_delete => "false"
-      automatic_recovery => "true"
+      auto_delete => false
+      automatic_recovery => true
       codec => "json"
       connect_retry_interval => 1
-      connection_timeout => 1000
-      durable => "true"
-      exchange => "logstash_reciever"
-      heartbeat => 1
+      connection_timeout => {{ logstash_rabbitmq_connection_timeout }}
+      durable => {{ logstash_exchange_durable | lower() }}
+      exchange => "{{ logstash_exchange_name }}"
+      heartbeat => {{ logstash_rabbitmq_heartbeat }}
       key => "logstash-syslog"
       metadata_enabled => "{{ logstash_rabbitmq_send_metadata | lower() }}"
       user => "{{ logstash_rabbitmq_output_user }}"
       password => "{{ logstash_rabbitmq_output_password }}"
       queue => "logstash-syslog"
-      threads => 3
-      prefetch_count => 50
-      vhost => "logstash"
+      threads => "{{ logstash_rabbitmq_threads }}"
+      prefetch_count => "{{ logstash_prefetch_count }}"
+      vhost => "{{ logstash_rabbitmq_vhost }}"
     }
 }
 

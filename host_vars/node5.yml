@@ -28,5 +28,3 @@
     - grok-patterns
     - linux-syslog
     - nginx
-
-  logstash_endpoint_host_ip: "192.168.0.170:9200"

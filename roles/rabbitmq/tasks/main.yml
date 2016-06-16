@@ -14,7 +14,6 @@
   - include: clustering.yml
     when: >
      enable_rabbitmq_clustering and (clustered.stat.exists != True)
-      and (inventory_hostname != "{{ rabbitmq_master }}")
 
   - include: vhost.yml
 

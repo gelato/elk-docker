@@ -33,5 +33,5 @@
       - output-syslog
       - output-nginx
 
-  logstash_endpoint_host_ip: "192.168.0.170:9200"
+  logstash_endpoint_host_ip: ["192.168.0.170:9200", "192.168.0.171:9200", "192.168.0.172:9200"]
   rabbitmq_endpoint: "192.168.0.170"

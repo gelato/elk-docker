@@ -1,5 +1,5 @@
 ---
-     elasticsearch_version: 2.3.2
+     elasticsearch_version: 2.3.3
      elasticsearch_index_shards: 18
      elasticsearch_index_replicas: 2
      elasticsearch_memory_mlockall: True

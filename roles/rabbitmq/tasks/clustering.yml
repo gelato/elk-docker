@@ -68,4 +68,4 @@
     file:
       path: /etc/rabbitmq/clustered
       state: touch
-    when: cluster_joined.changed
+    when: clustered.stat.exists != True
