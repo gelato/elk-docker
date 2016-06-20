@@ -1,5 +1,5 @@
 ---
-  
+
   logstash_endpoint_host_ip: ["192.168.0.170:9200", "192.168.0.171:9200", "192.168.0.172:9200"]
   logstash_user: logstash
   logstash_group: "{{ logstash_user }}"
@@ -16,11 +16,11 @@
   logstash_javacmd: /usr/bin/java
   logstash_opts:      []                # e.g. [ "--debug" ]
   logstash_java_opts: []
-  logstash_heap_size: "1g"
+  logstash_heap_size: "512m"
   logstash_nice:       19
   logstash_open_files: 16384
   logstash_use_gc_logging: false
-  logstash_kill_on_stop_timeout: 0
+  logstash_kill_on_stop_timeout: 1
 
   ############
   ##  Package

@@ -82,6 +82,17 @@
       - restart logstash
     tags: logstash_config
 
+  - name: Create logstash startup script
+    template:
+      src: etc.init.d.logstash.j2
+      dest: "/etc/init.d/logstash"
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+      - restart logstash
+    tags: logstash_config
+
 
   - name: Remove unmanaged files from logstash config dir
     shell: "find {{ logstash_conf_dir }}/ -maxdepth 1 -type f -regextype posix-egrep -not -regex '{{ logstash_conf_dir }}/({{outputs_to_install | join('|')}})\\.conf' -not -regex '{{ logstash_conf_dir }}/({{logstash_combined_configs | join('|')}})\\.conf' -delete"
