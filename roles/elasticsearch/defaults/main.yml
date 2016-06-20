@@ -99,9 +99,10 @@ elasticsearch_plugins:
     #   url: 'https://download.elastic.co/elasticsearch/release/org/elasticsearch/plugin/marvel-agent/2.3.1/marvel-agent-2.3.1.zip'
     # - name: 'marvel'
     #   url: 'https://download.elasticsearch.org/elasticsearch/marvel/marvel-2.3.1.tar.gz'
-#elasticsearch_plugin_mandatory: 'some-plugin'
-
-
+install_core_plugins: false
+elasticsearch_core_plugins:
+  - marvel-agent
+  - license
 # ---- Libraries ----
 
 # Examples:

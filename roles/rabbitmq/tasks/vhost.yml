@@ -13,6 +13,7 @@
       node: "{{ item.node | default('rabbit') }}"
       tracing: "{{ item.tracing | default('no') }}"
       state: present
+    run_once: true
     with_items: "{{ rabbitmq_vhost_definitions }}"
 
   - name: Add RabbitMQ user and set privileges | No clustering

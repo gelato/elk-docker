@@ -9,3 +9,4 @@
   - include: memcached.yml
   - include: rabbitmq.yml
   - include: logstash.yml
+  - include: kibana.yml

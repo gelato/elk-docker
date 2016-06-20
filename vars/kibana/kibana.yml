@@ -1,0 +1,7 @@
+---
+
+  install_kibana_plugins: false
+  kibana_plugins:
+    - org: elasticsearch
+      plugin: marvel
+      version: latest

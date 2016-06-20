@@ -1,12 +1,28 @@
 ---
-workspace: /root
 
-kibana_root: /var/www/kibana3
-kibana_server_name: logs.example.com
-kibana_elasticsearch_port: 80
-kibana_version: "3.1.3"
+  kibana_path: /opt/kibana
 
-kibana_username: kibana
-kibana_password: password
+  kibana_vars_dir: "vars/kibana/templates"
 
-kibana_password_protect_all: false
+  dns_url_kibana: "{{ ansible_hostname }}"
+
+  kibana_major_version: 4.5
+
+  kibana_port: 5601
+  kibana_host: '0.0.0.0'
+  kibana_elasticsearch_url: 'http://{{ ansible_hostname }}:9200'
+  kibana_elasticsearch_preserve_host: true
+  kibana_index: '.kibana'
+  kibana_enable_authentication: true
+  kibana_elasticsearch_username: user
+  kibana_elasticsearch_password: pass
+  kibana_default_app_id: discover
+  kibana_request_timeout: 300000
+  kibana_shard_timeout: 0
+  kibana_verify_ssl: false
+
+  install_kibana_plugins: false
+  kibana_plugins:
+    - org: elasticsearch
+      plugin: marvel
+      version: latest

@@ -1,11 +1,16 @@
 ---
-     elasticsearch_version: 2.3.3
-     elasticsearch_index_shards: 18
-     elasticsearch_index_replicas: 2
-     elasticsearch_memory_mlockall: True
-     elasticsearch_memory_heap_size_multiplier: 0.5
-     elasticsearch_cluster_name: 'Nidhoggur'
-     elasticsearch_plugins:
-         - name: 'lmenezes/elasticsearch-kopf/2.1.1'
-         - name: 'royrusso/elasticsearch-hq/v2.0.3'
-     elasticsearch_libs: []
+
+   elasticsearch_version: 2.3.3
+   elasticsearch_index_shards: 18
+   elasticsearch_index_replicas: 2
+   elasticsearch_memory_mlockall: True
+   elasticsearch_memory_heap_size_multiplier: 0.5
+   elasticsearch_cluster_name: 'Nidhoggur'
+   elasticsearch_plugins:
+       - name: 'lmenezes/elasticsearch-kopf/2.1.1'
+       - name: 'royrusso/elasticsearch-hq/v2.0.3'
+   elasticsearch_libs: []
+   install_core_plugins: false
+   elasticsearch_core_plugins:
+     - marvel-agent
+     - license

@@ -62,7 +62,7 @@
       group: "root"
       mode: 0644
     vars:
-        logstash_index_name: "logstash_{{ item }}_%{+YYYY.MM.dd}"
+        logstash_index_name: "logstash-{{ item }}_%{+YYYY.MM.dd}"
     when: outputs_to_install
     with_items: "{{ outputs_to_install }}"
     notify:

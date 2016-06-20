@@ -40,3 +40,12 @@
   with_items: "{{elasticsearch_plugins}}"
   notify:
      - restart elasticsearch
+
+- name: install core plugins
+  shell: bin/plugin install {{ item }} chdir={{ elasticsearch_path_home }}
+  when: >
+        (not "{{ item }}" in  elasticsearch_register_installed_plugins.stdout)
+         and install_core_plugins
+  with_items: "{{ elasticsearch_core_plugins }}"
+  notify:
+     - restart elasticsearch

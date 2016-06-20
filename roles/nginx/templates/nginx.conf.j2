@@ -1,63 +1,44 @@
-user  {{ nginx_user }};
-
-error_log  {{ nginx_error_log }};
-pid        {{ nginx_pidfile }};
+#{{ ansible_managed }}
+user              {{ nginx_user }}  {{ nginx_group }};
 
 worker_processes  {{ nginx_worker_processes }};
 
+{% if nginx_pid_file %}
+pid        {{ nginx_pid_file }};
+{% endif %}
+
+worker_rlimit_nofile {{ nginx_worker_rlimit_nofile }};
+
 events {
-    worker_connections  {{ nginx_worker_connections }};
-    multi_accept {{ nginx_multi_accept }};
+{% for v in nginx_events_params %}
+        {{ v }};
+{% endfor %}
 }
 
-{% if nginx_extra_conf_options %}
-{{ nginx_extra_conf_options }}
-{% endif %}
 
 http {
-    include       {{ nginx_mime_file_path }};
-    default_type  application/octet-stream;
 
-    server_names_hash_bucket_size {{ nginx_server_names_hash_bucket_size }};
-
-    client_max_body_size {{ nginx_client_max_body_size }};
-
-    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                      '$status $body_bytes_sent "$http_referer" '
-                      '"$http_user_agent" "$http_x_forwarded_for"';
-
-    access_log  {{ nginx_access_log }};
-
-    sendfile        {{ nginx_sendfile }};
-    tcp_nopush      {{ nginx_tcp_nopush }};
-    tcp_nodelay     {{ nginx_tcp_nodelay }};
-
-    keepalive_timeout  {{ nginx_keepalive_timeout }};
-    keepalive_requests {{ nginx_keepalive_requests }};
-
-    #gzip  on;
-
-{% if nginx_proxy_cache_path %}
-    proxy_cache_path {{ nginx_proxy_cache_path }};
-{% endif %}
-
-{% if nginx_extra_http_options %}
-    {{ nginx_extra_http_options }}
-{% endif %}
-
-{% for upstream in nginx_upstreams %}
-    upstream {{ upstream.name }} {
-{% if upstream.strategy is defined %}
-        {{ upstream.strategy }};
-{% endif %}
-{% for server in upstream.servers %}
-        server {{ server }};
-{% endfor %}
-    }
+        include {{ nginx_conf_dir }}/mime.types;
+        default_type application/octet-stream;
+{% for v in nginx_http_params %}
+        {{ v }};
 {% endfor %}
 
-    include {{ nginx_conf_path }}/*.conf;
-{% if nginx_conf_path != nginx_vhost_path %}
-    include {{ nginx_vhost_path }}/*;
-{% endif %}
+        include {{ nginx_conf_dir }}/conf.d/*.conf;
+        include {{ nginx_conf_dir }}/sites-enabled/*;
 }
+
+{% if nginx_official_repo_mainline %}
+stream {
+
+{% for v in nginx_stream_params %}
+        {{ v }};
+{% endfor %}
+
+        include {{ nginx_conf_dir }}/conf.d/stream/*.conf;
+}
+{% endif %}
+
+{% if nginx_daemon_mode == "off" %}
+daemon off;
+{% endif %}

@@ -26,6 +26,7 @@ input {
 filter {
   if [type] == "linux-syslog" {
     grok {
+      match => { "message" => "%{SYSLOGTIMESTAMP:process_state_change_time} %{HOSTNAME} /etc/init.d/%{WORD:init_script}: %{WORD:process} %{WORD:process_state}" }
       match => { "message" => "^%{SYSLOGTIMESTAMP:syslog_timestamp}\s*%{SYSLOGHOST:syslog_hostname}\s*(%{PROG:syslog_program})?\s*(:?\[%{POSINT:syslog_pid}\])?:?\s*%{GREEDYDATA:syslog_message}[a-z]*\s*$" }
       add_tag => "syslog_everything"
       keep_empty_captures => "true"

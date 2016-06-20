@@ -6,3 +6,5 @@
     roles:
       - role: librenms
         tags: librenms_role
+      - role: apache2
+        tags: apache2_role
