@@ -5,6 +5,10 @@ output {
              hosts => {{ logstash_endpoint_host_ip | to_json() }}
              index => "{{ logstash_index_name }}"
              document_type => "linux-authlog"
+             flush_size => 500
+             idle_flush_time => 1
+             template_overwrite => true
+             timeout => 5
              }
     }  else if [type] == "linux-authlog" and "logstash_ssh_parsefailure" in [tags] {
         file { path => "/var/log/logstash/failed_ssh_events-%{+YYYY-MM-dd}" }

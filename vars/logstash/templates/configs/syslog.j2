@@ -29,26 +29,22 @@ filter {
       break_on_match => true
       match => { "message" => "^%{SYSLOGTIMESTAMP:process_change_time}\s*%{HOSTNAME:process_change_hostname}\s*/etc/init.d/%{WORD:process_change_init}:?\s*%{WORD:process_change_name}\s*%{WORD:process_change_state}\s*" }
       add_tag => "process_change"
-      overwrite => [ "message" ]
     }
     grok {
       break_on_match => true
       match => {"message" => "^%{SYSLOGTIMESTAMP:oom_kill_time}\s*%{IPORHOST:oom_kill_host}\s*%{WORD:oom_kill_call_type}:?\s*\[%{GREEDYDATA}\]\s* Out\s*of\s*memory:?\s*Kill\s*process\s*%{POSINT:oom_kill_pid}\s*\(%{PROG:oom_kill_name}\)\s*score\s*%{NUMBER:score}\s*or\s*sacrifice\s*child"}
       add_tag => "oom_process_killed"
-      overwrite => [ "message" ]
     }
     grok {
       break_on_match => true
       match => {"message" => "^%{SYSLOGTIMESTAMP:cronjob_timestamp}\s* %{IPORHOST:cronjob_host}\s*CRON\[%{POSINT}\]:?\s*\(%{USERNAME:cronjob_startedby}\)\s*CMD\s*\(%{GREEDYDATA:cronjob_message}\)\s*$"}
       add_tag => "cron_job"
-      overwrite => [ "message" ]
     }
     grok {
       match => { "message" => "^%{SYSLOGTIMESTAMP:syslog_timestamp}\s*%{SYSLOGHOST:syslog_hostname}\s*(%{PROG:syslog_program})?\s*(:?\[%{POSINT:syslog_pid}\])?:?\s*%{GREEDYDATA:syslog_message}[a-z]*\s*$" }
       add_tag => "syslog_everything"
       keep_empty_captures => "true"
       tag_on_failure => "logstash_syslog_parsefailure"
-      overwrite => [ "message" ]
     }
     date {
       match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]

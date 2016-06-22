@@ -5,6 +5,10 @@ output {
              hosts => {{ logstash_endpoint_host_ip | to_json() }}
              index => "{{ logstash_index_name }}"
              document_type => "linux-nginx"
+             flush_size => 500
+             idle_flush_time => 1
+             template_overwrite => true
+             timeout => 5
          }
    } else if [type] == "nginx-error" {
         elasticsearch {
@@ -12,6 +16,10 @@ output {
              hosts => {{ logstash_endpoint_host_ip | to_json() }}
              index => "logstash-nginx-error-%{+YYYY.MM.dd}"
              document_type => "linux-nginx"
+             flush_size => 500
+             idle_flush_time => 1
+             template_overwrite => true
+             timeout => 5
          }
    } else if [type] == "nginx-access" and "logstash_nginx_access_parsefailure" in [tags] {
        file { path => "/var/log/logstash/failed_nginx_access_events-%{+YYYY-MM-dd}" }

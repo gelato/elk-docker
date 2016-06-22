@@ -29,7 +29,6 @@ filter {
          match => { "message" => "%{NGINXACCESS}" }
          tag_on_failure => "logstash_nginx_access_parsefailure"
          add_tag => "logstash_nginx_access"
-         overwrite => [ "message" ]
          patterns_dir => "/opt/logstash/patterns"
     }
     mutate {
@@ -53,7 +52,6 @@ filter {
           match => {"message" => "%{NGINXERROR}"}
           tag_on_failure => "logstash_nginx_error_parsefailure"
           add_tag => "logstash_nginx_error"
-          overwrite => [ "message" ]
           patterns_dir => "/opt/logstash/patterns"
       }
       geoip {

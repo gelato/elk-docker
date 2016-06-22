@@ -15,7 +15,7 @@
   ##  Default Settings
   logstash_javacmd: /usr/bin/java
   logstash_opts:      []                # e.g. [ "--debug" ]
-  logstash_java_opts: []
+  logstash_java_opts: ["-Dnetwordaddress.cache.ttl=1"]
   logstash_heap_size: "512m"
   logstash_nice:       19
   logstash_open_files: 16384
