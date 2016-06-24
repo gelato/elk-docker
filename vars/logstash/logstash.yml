@@ -18,8 +18,8 @@
   logstash_rabbitmq_threads: 3
   logstash_rabbitmq_heartbeat: 1
   logstash_rabbitmq_connection_timeout: 3000
-  logstash_rabbitmq_port: 5672
+  logstash_rabbitmq_port: 6672
   logstash_rabbitmq_vhost: "logstash"
   #From rabbitmq to logstash
-  rabbitmq_endpoint: "192.168.0.170"
+  rabbitmq_endpoint: "127.0.0.1"
   logstash_rabbitmq_send_metadata: false

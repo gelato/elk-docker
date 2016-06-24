@@ -1,0 +1,14 @@
+ date {
+      match => [ "logdate",
+                 "yyyy-MM-dd HH:mm:ss.SSS",
+                 "yyyy-MM-dd HH:mm:ss,SSS",
+                 "yyyy-MM-dd HH:mm:ss",
+                 "MMM  d HH:mm:ss",
+                 "MMM dd HH:mm:ss",
+                 "dd/MMM/yyyy:HH:mm:ss Z",
+                 "yyyy-MM-dd HH:mm:ss.SSSZ",
+                 "E MMM dd HH:mm:ss yyyy Z",
+                 "E MMM dd HH:mm:ss yyyy"
+               ]
+     timezone => "UTC"
+}
