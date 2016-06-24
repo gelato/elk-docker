@@ -42,17 +42,17 @@ node.name: {{ elasticsearch_node_name }}
 
 # Every node can be configured to allow or deny being eligible as the master,
 # and to allow or deny to store the data.
-{% if elasticsearch_group_workhorse in group_names %}
+{% if elasticsearch_workhorse in group_names %}
 # 1. You want this node to never become a master node, only to hold data.
 #    This will be the "workhorse" of your cluster.
 node.master: false
 node.data: true
-{% elif elasticsearch_group_coordinator in group_names %}
+{% elif elasticsearch_coordinator in group_names %}
 # 2. You want this node to only serve as a master: to not store any data and
 #    to have free resources. This will be the "coordinator" of your cluster.
 node.master: true
 node.data: false
-{% elif elasticsearch_group_loadbalancer in group_names %}
+{% elif elasticsearch_loadbalancer in group_names %}
 # 3. You want this node to be neither master nor data node, but
 #    to act as a "search load balancer" (fetching data from nodes,
 #    aggregating results, etc.)

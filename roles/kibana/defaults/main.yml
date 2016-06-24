@@ -10,10 +10,10 @@
 
   kibana_port: 5601
   kibana_host: '0.0.0.0'
-  kibana_elasticsearch_url: 'http://{{ ansible_hostname }}:9200'
+  kibana_elasticsearch_url: "http://127.0.0.1:9200"
   kibana_elasticsearch_preserve_host: true
   kibana_index: '.kibana'
-  kibana_enable_authentication: true
+  kibana_enable_authentication: false
   kibana_elasticsearch_username: user
   kibana_elasticsearch_password: pass
   kibana_default_app_id: discover

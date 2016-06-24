@@ -24,24 +24,24 @@
        haproxy_listen:
         - name: logstash
           bind:
-            - 0.0.0.0:6672
+            - 127.0.0.1:6672
           mode: tcp
           description: Listening for logstashes
           balance: leastconn
           retries: 3
           servers:
            - name: 'rabbit-master'
-             ip: '192.168.0.170:5672'
+             ip: "{{ hostvars[groups['elasticsearch_masters'][0]]['ansible_template_host'] }}:5672"
              params:
                - check
                - weight 255
            - name: 'rabbit-slave-01'
-             ip: '192.168.0.171:5672'
+             ip: "{{ hostvars[groups['elasticsearch_masters'][1]]['ansible_template_host'] }}:5672"
              params:
                - check
                - weight 255
            - name: 'rabbit-slave-02'
-             ip: '192.168.0.172:5672'
+             ip: "{{ hostvars[groups['elasticsearch_masters'][2]]['ansible_template_host'] }}:5672"
              params:
                - check
                - weight 255

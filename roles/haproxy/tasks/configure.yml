@@ -42,7 +42,7 @@
     template:
       src: listen.cfg
       dest: "/etc/haproxy/listen.d/{{ item.name }}.cfg"
-    with_items: haproxy_listen
+    with_items: "{{ haproxy_listen }}"
     when: haproxy_listen is defined
 
   - name: 'Create directory for the userlists'
