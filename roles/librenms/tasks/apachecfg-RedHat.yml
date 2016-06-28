@@ -18,7 +18,12 @@
       src: librenms.conf.j2
       dest: /etc/httpd/conf.d/librenms.conf
       owner: apache
-      group: apache
+      group: librenms
       backup: yes
     notify:
       - restart httpd
+
+    - name: Adding user apache to librenms group"
+      user: name=apache groups=librenms append=yes
+      notify:
+        - restart httpd

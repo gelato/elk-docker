@@ -8,8 +8,8 @@
 
   - name: Template librenms memcached
     template:
-      src: "{{ memcached_templates_dir }}/memcached.j2"
-      dest: "/etc/memcached/memcached"
+      src: "{{ memcached_templates_dir }}/memcached.deb.j2"
+      dest: "/etc/memcached.conf"
       owner: root
       group: root
       mode: 0644

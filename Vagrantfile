@@ -37,7 +37,7 @@ Vagrant.configure(2) do |config|
         end
     end
   config.vm.define "librenms" do |librenms|
-    librenms.vm.box = "centos/7"
+    librenms.vm.box = "ubuntu/trusty64"
     librenms.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
     librenms.vm.network :public_network, ip: "192.168.0.111",
        :use_dhcp_assigned_default_route => true, bridge: "eth0"
@@ -51,9 +51,7 @@ Vagrant.configure(2) do |config|
       #  ansible.verbose = "vvv"
        ansible.limit = "service"
        ansible.playbook = "main.yml"
-       ansible.groups = {
-         "service" => ["librenms"]
-       }
+       ansible.inventory_path = "./elastic-inventory.ini"
     end
   end
 end

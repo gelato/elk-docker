@@ -5,7 +5,7 @@
       path: "{{ item }}"
       state: touch
       owner: librenms
-      group: apache
+      group: www-data
       mode: 0644
     changed_when: false
     with_items:
@@ -15,9 +15,20 @@
   - name: Template apache configuration
     template:
       src: librenms.conf.j2
-      dest: /etc/apache2/sites-enabled/librenms.conf
+      dest: /etc/apache2/sites-available/librenms.conf
       owner: www-data
       group: www-data
       backup: yes
+    notify:
+      - restart apache
+
+  - name: enable apache site
+    command: a2ensite librenms.conf
+    when: ansible_os_family == "Debian"
+    notify:
+      - restart apache
+
+  - name: Adding user www-data to librenms group"
+    user: name=www-data groups=librenms append=yes
     notify:
       - restart apache

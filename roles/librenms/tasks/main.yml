@@ -11,7 +11,7 @@
 
   - name: Include selinux tasks
     include: selinux.yml
-    when: ansible_selinux.status is defined and ansible_selinux.status == 'permissive'
+    when: ansible_selinux.status is defined and (ansible_selinux.status == 'permissive' and ansible_os_family == "RedHat")
 
   - name: Install pear modules
     pear: name={{ item }} state=present

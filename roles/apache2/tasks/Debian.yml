@@ -15,7 +15,7 @@
 
   - name: Remove apache default config
     file:
-      path: {{ debian_apache_default_site }}
+      path: "{{ debian_apache_default_site }}"
       state: absent
     notify:
       - restart apache

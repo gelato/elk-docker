@@ -32,4 +32,7 @@
     - php-net-ipv4
     - php-net-ipv6
     - rrdtool
+    - rrdcached
     - git
+    - nagios-plugins
+    - snmp-mibs-downloader

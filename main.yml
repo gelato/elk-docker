@@ -5,8 +5,8 @@
 
   - include: elasticsearch.yml
   - include: filebeat.yml
-  # - include: librenms.yml
-  # - include: memcached.yml
+  - include: librenms.yml
+  - include: memcached.yml
   - include: rabbitmq.yml
   - include: logstash.yml
   - include: kibana.yml

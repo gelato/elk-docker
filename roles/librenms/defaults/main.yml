@@ -27,7 +27,7 @@
   librenms_db_host: localhost
   #
   librenms_services_enable: yes
-  librenms_nagios_plugins: /usr/lib/nagios/plugins
+  librenms_nagios_plugins_loc: /usr/lib64/nagios/plugins
   #
   librenms_auth_mechanism: mysql
   librenms_ldap_version: "3"
@@ -56,11 +56,8 @@
   librenms_alerts_bgp_whitelist: []
   librenms_alerts_port_ifdown: "FALSE"
   #
-  librenms_snmp_communities:
-    - public
-  librenms_snmp_max_rep: 20
   librenms_snmpwalk: "/usr/bin/snmpwalk"
-  librenms_snmpbulkwalk: "/usr/bin/snmpbulkwalk -Cr{{librenms_snmp_max_rep}}"
+  librenms_snmpbulkwalk: "/usr/bin/snmpbulkwalk"
   #
   librenms_pollers_disabled: []
   #
