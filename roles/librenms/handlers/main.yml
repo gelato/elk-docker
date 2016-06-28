@@ -8,6 +8,9 @@
 - name: restart httpd
   service: name=httpd state=restarted
 
+- name: restart rrdcached
+  service: name=rrdcached state=restarted
+
 - name: validate install
   shell: >-
     chdir={{ librenms_path }}

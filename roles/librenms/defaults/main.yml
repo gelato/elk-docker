@@ -1,5 +1,6 @@
 ---
 
+  librenms_template_path: "vars/librenms/templates"
   librenms_site_style: light # dark, light, mono
   librenms_page_refresh: 300
   librenms_public_status: false # base stats made public on login page
@@ -57,7 +58,8 @@
   librenms_alerts_port_ifdown: "FALSE"
   #
   librenms_snmpwalk: "/usr/bin/snmpwalk"
-  librenms_snmpbulkwalk: "/usr/bin/snmpbulkwalk"
+  snmpbulkwalk_count: 20
+  librenms_snmpbulkwalk: "/usr/bin/snmpbulkwalk -Cr{{ snmpbulkwalk_count }}"
   #
   librenms_pollers_disabled: []
   #
@@ -75,6 +77,7 @@
     - "*/5 *   * * *  librenms  /opt/librenms/discovery.php -h new > /dev/null 2>&1"
     - "*/5 *   * * *  librenms  /opt/librenms/cronic /opt/librenms/poller-wrapper.py {{ librenms_poller_threads }}"
     - "15  6   * * *  librenms  /opt/librenms/daily.sh > /dev/null 2>&1"
+    - "*/5 * * * * librenms /opt/librenms/check-services.php >> /dev/null 2>&1"
   librenms_pear_modules:
     - Net_IPv4-1.3.4
     - Net_IPv6-1.2.2b2

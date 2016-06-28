@@ -16,15 +16,16 @@
 
   - name: Template rrdcached configuration
     template:
-      src: rrdcached.j2
+      src: "{{ librenms_template_path }}/rrdcached.j2"
       dest: /etc/default/rrdcached
       owner: root
       group: root
       backup: yes
     notify:
       - restart apache
+      - restart rrdcached
 
-  - name: Create librenms directories
+  - name: Create rrdcached socket directory
     file:
       path: /var/run/rrdcached
       state: directory

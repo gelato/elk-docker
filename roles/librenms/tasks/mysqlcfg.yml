@@ -27,7 +27,7 @@
 
   - name: Create my.cnf for librenms
     template:
-      src: my.cnf.j2
+      src: "{{ librenms_template_path }}/my.cnf.j2"
       dest: "{{ librenms_path }}/.my.cnf"
       owner: "{{ librenms_user }}"
       group: "{{ librenms_user }}"

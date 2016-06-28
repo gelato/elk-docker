@@ -3,12 +3,6 @@
   - name: Include os-specific variables
     include_vars: "{{ ansible_os_family }}.yml"
 
-  - include: setup-redhat.yml
-    when: ansible_os_family == "RedHat"
-
-  - include: setup-debian.yml
-    when: ansible_os_family == "Debian"
-
   - name: Include selinux tasks
     include: selinux.yml
     when: ansible_selinux.status is defined and (ansible_selinux.status == 'permissive' and ansible_os_family == "RedHat")
@@ -21,10 +15,6 @@
     stat: path={{ librenms_path }}
     register: librenms_stat
 
-  - name: Checkout librenms
-    when: not librenms_stat.stat.exists
-    git: dest={{ librenms_path }} repo={{ librenms_git_url }}
-
   - name: Create librenms user
     user:
       name: "{{ librenms_user }}"
@@ -33,6 +23,16 @@
       system: yes
       createhome: no
       state: present
+
+  - include: setup-redhat.yml
+    when: ansible_os_family == "RedHat"
+
+  - include: setup-debian.yml
+    when: ansible_os_family == "Debian"
+
+  - name: Checkout librenms
+    when: not librenms_stat.stat.exists
+    git: dest={{ librenms_path }} repo={{ librenms_git_url }}
 
   - name: Set permissions on librenms path
     when: not librenms_stat.stat.exists
@@ -55,7 +55,7 @@
 
   - name: Template librenms configuration
     template:
-      src: config.php.j2
+      src: "{{ librenms_template_path }}/config.php.j2"
       dest: "{{ librenms_path }}/config.php"
       owner: "{{ librenms_user }}"
       group: "{{ librenms_user }}"
@@ -76,7 +76,7 @@
 
   - name: template librenms crontab
     template:
-      src: librenms.cron.j2
+      src: "{{ librenms_template_path }}/librenms.cron.j2"
       dest: /etc/cron.d/librenms
       owner: root
       group: root
@@ -94,6 +94,8 @@
     notify:
       - validate install
       - discover localhost
+      - restart rrdcached
+      - restart apache
 
   - name: Create librenms admin user
     shell: >-

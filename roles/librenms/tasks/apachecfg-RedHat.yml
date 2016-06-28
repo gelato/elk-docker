@@ -15,7 +15,7 @@
 
   - name: Template apache configuration
     template:
-      src: librenms.conf.j2
+      src: "{{ librenms_template_path }}/librenms.conf.j2"
       dest: /etc/httpd/conf.d/librenms.conf
       owner: apache
       group: librenms

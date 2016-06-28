@@ -14,6 +14,8 @@
       group: root
       mode: 0644
       backup: yes
+    notify:
+      - restart memcached
 
   - name: Enable and start memcached
     service: name=memcached enabled=yes state=started
