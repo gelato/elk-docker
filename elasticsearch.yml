@@ -1,4 +1,5 @@
 ---
+
   - hosts: elasticsearch_master
     become: True
     vars_files:

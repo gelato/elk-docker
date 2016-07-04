@@ -1,4 +1,5 @@
 ---
+
   - hosts: librenms
     become: True
     vars_files:
