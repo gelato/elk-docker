@@ -1,0 +1,14 @@
+---
+
+  - name: Get container
+    docker:
+      name: "{{ logstash_container_name }}"
+      image: "logstash:{{ logstash_container_version }}"
+      state: started
+      pull: always
+      volumes:
+        - "{{ logstash_conf_dir }}:/config-dir/{{ logstash_conf_type }}"
+        - "/var/log/machines/{{ logstash_container_name }}:/var/log"
+      expose:
+        - 5000
+      command: "logstash -f /config-dir/{{ logstash_conf_type }}"

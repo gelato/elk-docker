@@ -1,0 +1,14 @@
+---
+
+# repo information
+elasticsearch_key_id: 'D88E42B4'
+elasticsearch_repository: 'http://packages.elasticsearch.org/elasticsearch'
+
+# memory
+elasticsearch_memory_heap_size: '{{ (ansible_memtotal_mb | int * elasticsearch_memory_heap_size_multiplier) | round | int }}m'
+
+# discovery
+elasticsearch_discovery_multicast_port: 54328
+
+# networking
+elasticsearch_bind_host: '0.0.0.0'

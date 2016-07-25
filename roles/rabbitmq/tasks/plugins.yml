@@ -1,0 +1,13 @@
+---
+  
+  - name: Enable RabbitMQ plugins
+    rabbitmq_plugin:
+      names: "{{ rabbitmq_plugins | join(',') }}"
+      new_only: "{{ rabbitmq_new_only }}"
+    notify: restart rabbitmq-server
+    when: rabbitmq_plugins != []
+
+  - name: Get the list of active RabbitMQ plugins to disable
+    command: rabbitmq-plugins list -e -m
+    register: result
+    when: rabbitmq_plugins == []

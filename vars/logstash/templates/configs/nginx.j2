@@ -1,0 +1,70 @@
+input {
+      rabbitmq {
+        host => "{{ rabbitmq_endpoint }}"
+        subscription_retry_interval_seconds => 5
+        ack => true
+        arguments => { "x-ha-policy" => "all" }
+        auto_delete => false
+        automatic_recovery => true
+        codec => "json"
+        connect_retry_interval => 1
+        connection_timeout => {{ logstash_rabbitmq_connection_timeout }}
+        durable => {{ logstash_exchange_durable | lower() }}
+        exchange => "{{ logstash_exchange_name }}"
+        heartbeat => {{ logstash_rabbitmq_heartbeat }}
+        key => "logstash-nginx"
+        metadata_enabled => "{{ logstash_rabbitmq_send_metadata | lower() }}"
+        user => "{{ logstash_rabbitmq_output_user }}"
+        password => "{{ logstash_rabbitmq_output_password }}"
+        queue => "logstash-nginx"
+        threads => "{{ logstash_rabbitmq_threads }}"
+        prefetch_count => "{{ logstash_prefetch_count }}"
+        vhost => "{{ logstash_rabbitmq_vhost }}"
+      }
+}
+
+filter {
+  if [type] == "nginx-access" {
+    grok {
+         match => { "message" => "%{NGINXACCESS}" }
+         tag_on_failure => "logstash_nginx_access_parsefailure"
+         add_tag => "logstash_nginx_access"
+         patterns_dir => "/opt/logstash/patterns"
+         add_field => [ "received_at", "%{@timestamp}" ]
+    }
+    mutate {
+        convert => ["response", "integer"]
+        convert => ["bytes", "integer"]
+    }
+   geoip {
+        source => "clientip"
+        target => "geoip"
+        add_tag => [ "nginx-geoip" ]
+    }
+    date {
+       match => [ "timestamp" , "dd/MMM/YYYY:HH:mm:ss Z" ]
+       remove_field => [ "timestamp" ]
+      }
+    useragent {
+       source => "agent"
+      }
+  } else if [type] == "nginx-error" {
+      grok {
+          match => {"message" => "%{NGINXERROR}"}
+          tag_on_failure => "logstash_nginx_error_parsefailure"
+          add_tag => "logstash_nginx_error"
+          patterns_dir => "/opt/logstash/patterns"
+          add_field => [ "received_at", "%{@timestamp}" ]
+      }
+      geoip {
+         source => "client"
+         target => "geoip"
+         add_tag => [ "nginx-geoip" ]
+        }
+
+      date {
+          match => [ "timestamp" , "YYYY/MM/dd HH:mm:ss" ]
+          remove_field => [ "timestamp" ]
+        }
+   }
+}

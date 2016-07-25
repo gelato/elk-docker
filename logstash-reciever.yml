@@ -1,0 +1,28 @@
+---
+
+  - hosts: logstash-reciever
+    become: True
+    vars_files:
+      - "vars/logstash/logstash.yml"
+    roles:
+      - role: logstash
+        tags:
+          - logstash_reciever_role
+          - logstash_stack
+        logstash_container_name: logstash-reciever
+        logstash_combined_configs:
+          - fb-reciever
+
+        outputs_to_install:
+          - fb-reciever-output
+
+        logstash_patterns:
+          - grok-patterns
+          - linux-syslog
+          - nginx
+
+        logstash_conf_dir: /opt/logstash/conf.d/reciever
+        logstash_conf_type: reciever
+
+      - role: tzdata
+        timezone: Europe/Simferopol

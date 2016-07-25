@@ -1,0 +1,9 @@
+---
+  
+  - hosts: rabbitmq
+    become: True
+    vars_files:
+      - "vars/rabbitmq/rabbitmq.yml"
+    roles:
+      - role: rabbitmq
+        tags: rabbitmq_role
