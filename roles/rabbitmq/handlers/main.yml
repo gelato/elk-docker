@@ -1,0 +1,12 @@
+---
+  # handlers file for rabbitmq
+  - name: restart rabbitmq-server
+    service: name=rabbitmq-server state=restarted enabled=yes
+
+  - name: delete guest
+    rabbitmq_user:
+      user: "guest"
+      vhost: "/"
+      state: absent
+    run_once: true
+    ignore_errors: true

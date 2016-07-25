@@ -1,0 +1,18 @@
+output {
+  rabbitmq {
+    exchange => "{{ logstash_exchange_name }}"
+    exchange_type => "{{ logstash_rabbitmq_exchange_type }}"
+    host => "{{ rabbitmq_endpoint }}"
+    port => {{ logstash_rabbitmq_port }}
+    automatic_recovery => true
+    codec => "json"
+    durable => {{ logstash_exchange_durable | lower() }}
+    key => "{{ logstash_routing_key }}"
+    user => "{{ logstash_rabbitmq_output_user }}"
+    password => "{{ logstash_rabbitmq_output_password }}"
+    persistent => "{{ logstash_rabbitmq_output_persistent | lower() }}"
+    workers => {{ logstash_rabbitmq_output_workers }}
+    heartbeat => {{ logstash_rabbitmq_heartbeat }}
+    vhost => "{{ logstash_rabbitmq_vhost }}"
+  }
+}
