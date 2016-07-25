@@ -1,3 +1,0 @@
----
-  - include: logstash_configuration.yml
-  - include: logstash_docker.yml
