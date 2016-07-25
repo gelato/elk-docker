@@ -1,5 +1,0 @@
----
-java_needs_oracle: True
-java_packages:
-    - oracle-java8-installer
-java_cleanup: True

@@ -1,9 +1,0 @@
----
-  
-  - hosts: logstash
-    become: True
-    vars_files:
-      - "vars/logstash/logstash.yml"
-    roles:
-      - role: logstash
-        tags: logstash_role

@@ -1,3 +1,0 @@
----
-
-  dependencies: ["memcached", "apache2", "hosts", "tzdata"]

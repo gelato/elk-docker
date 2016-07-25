@@ -1,9 +1,0 @@
----
-
-  - name: install plugins
-    command: "{{ kibana_path }}/kibana-{{ kibana_full_version }}-linux-x64/bin/kibana plugin --install {{ item.org }}/{{ item.plugin }}/{{ item.version }}"
-    ignore_errors: yes
-    with_items: "{{ kibana_plugins }}"
-    when: install_kibana_plugins
-    notify:
-      - restart kibana service

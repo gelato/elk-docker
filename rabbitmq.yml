@@ -1,9 +1,0 @@
-- hosts: rabbitmq
-  become: True
-  vars_files:
-    - "vars/rabbitmq/rabbitmq.yml"
-  pre_tasks:
-    - debug: var=enable_rabbitmq_clustering
-  roles:
-    - role: rabbitmq
-      tags: rabbitmq_role
