@@ -1,0 +1,14 @@
+---
+  - name: Filebeat configuration file
+    template:
+      src: "{{ filebeat_template_dir }}/filebeat.yml.j2"
+      dest: "{{ filebeat_config_dir }}/filebeat.yml"
+      owner: root
+      group: root
+      mode: 0640
+    notify:
+      - filebeat restart
+    tags:
+      - filebeat_config
+
+# vi:ts=2:sw=2:et:ft=yaml

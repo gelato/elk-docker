@@ -1,0 +1,8 @@
+---
+  - hosts: memcached
+    become: True
+    vars_files:
+      - "vars/memcached/memcached.yml"
+    roles:
+      - role: memcached
+        tags: memcached_role

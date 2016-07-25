@@ -1,0 +1,7 @@
+---
+  - include: logstash_installation.yml
+    when: ansible_os_family == "Debian"
+
+  - include: plugins.yml
+    tags: logstash_plugins
+    when: (logstash_plugins is defined)

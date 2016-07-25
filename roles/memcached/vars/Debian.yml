@@ -1,0 +1,6 @@
+---
+
+  memcached_packages:
+    - php5
+    - php5-memcached
+    - memcached

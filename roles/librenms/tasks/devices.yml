@@ -1,0 +1,14 @@
+---
+- name: get list of discovered devices from librenms
+  command: mysql -ssNe "select hostname from devices" librenms
+  become_user: "{{ librenms_user }}"
+  register: librenms_discovered_devices
+  changed_when: False
+
+- name: add devices to librenms for discovery
+  command: >-
+    chdir={{ librenms_path }}
+    php addhost.php {{ item }}
+  become_user: "{{ librenms_user }}"
+  with_items: "{{ librenms_devices }}"
+  when: item not in librenms_discovered_devices.stdout_lines

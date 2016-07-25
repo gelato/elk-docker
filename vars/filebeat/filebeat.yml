@@ -1,0 +1,22 @@
+filebeat_template_dir: "vars/filebeat/templates"
+filebeat_destinations:
+  - "{{ hostvars[groups['logstash-reciever'][0]]['ansible_template_host'] }}"
+  - "{{ hostvars[groups['logstash-reciever'][1]]['ansible_template_host'] }}"
+
+logstash_port: 5000
+
+filebeat_prospectors:
+  - paths:
+      - '/var/log/syslog'
+    encoding: 'plain'
+    input_type: 'log'
+    document_type: 'linux-syslog'
+    prospector_fields:
+      file-name: syslog
+  - paths:
+      - '/var/log/auth.log'
+    encoding: 'plain'
+    input_type: 'log'
+    document_type: 'linux-authlog'
+    prospector_fields:
+      file-name: auth.log

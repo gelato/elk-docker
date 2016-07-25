@@ -1,0 +1,114 @@
+---
+
+  - name: Adding user "{{ logstash_user }} to adm group"
+    user: name="{{ logstash_user }}" groups=adm,syslog append=yes
+    notify:
+      - restart logstash
+
+  - name: Download and install logstash apt public signing key
+    apt_key: url="{{ logstash_signing_key_url }}" state=present
+
+
+  - name: Add logstash apt repository definition to apt sources list
+    apt_repository: repo="{{ logstash_apt_repo }}" update_cache=yes state=present
+
+  - name: Install logstash
+    apt: name=logstash state=present
+
+  - name: Ensure logstash dirs are created
+    file:
+      path: "{{ item }}"
+      owner: "{{ logstash_user }}"
+      group: "{{ logstash_group }}"
+      mode: 0775
+      state: directory
+    with_items:
+      - "{{ logstash_home_dir }}"
+      - "{{ logstash_patterns_dir }}"
+
+  - name: Create logstash config files
+    template:
+      src: "{{ logstash_config_templates }}/{{ item }}.j2"
+      dest: "{{ logstash_conf_dir }}/{{ item }}.conf"
+      owner: "root"
+      group: "root"
+      mode: 0644
+    when: logstash_combined_configs
+    with_items: "{{ logstash_combined_configs }}"
+    notify:
+      - validate logstash config
+      - restart logstash
+    tags: logstash_config
+
+  - name: Create logstash patterns
+    template:
+      src: "{{ logstash_pattern_templates }}/{{ item }}"
+      dest: "{{ logstash_patterns_dir }}/{{ item }}"
+      owner: "{{ logstash_user }}"
+      group: "{{ logstash_group }}"
+      mode: 0644
+    when: logstash_patterns
+    with_items: "{{ logstash_patterns }}"
+    notify:
+      - restart logstash
+    tags: logstash_config
+
+
+  - name: Create logstash output configs
+    template:
+      src: "{{ logstash_output_templates }}/{{ item }}.j2"
+      dest: "{{ logstash_conf_dir }}/{{ item }}.conf"
+      owner: "root"
+      group: "root"
+      mode: 0644
+    vars:
+        logstash_index_name: "logstash-{{ item }}_%{+YYYY.MM.dd}"
+    when: outputs_to_install
+    with_items: "{{ outputs_to_install }}"
+    notify:
+      - validate logstash config
+      - restart logstash
+    tags: logstash_config
+
+
+  - name: Create logstash default settings file
+    template:
+      src: etc.default.logstash.j2
+      dest: "/etc/default/logstash"
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+      - restart logstash
+    tags: logstash_config
+
+  - name: Create logstash startup script
+    template:
+      src: etc.init.d.logstash.j2
+      dest: "/etc/init.d/logstash"
+      owner: root
+      group: root
+      mode: 0744
+    notify:
+      - restart logstash
+    tags: logstash_config
+
+
+  - name: Remove unmanaged files from logstash config dir
+    shell: "find {{ logstash_conf_dir }}/ -maxdepth 1 -type f -regextype posix-egrep -not -regex '{{ logstash_conf_dir }}/({{outputs_to_install | join('|')}})\\.conf' -not -regex '{{ logstash_conf_dir }}/({{logstash_combined_configs | join('|')}})\\.conf' -delete"
+    when: outputs_to_install is defined and logstash_combined_configs is defined
+    changed_when: False
+    notify:
+      - restart logstash
+    tags: logstash_config
+
+  - name: Remove unmanaged patterns
+    shell: "find {{ logstash_patterns_dir }}/ -maxdepth 1 -type f -regextype posix-egrep -not -regex '{{ logstash_patterns_dir }}/({{logstash_patterns | join('|')}})' -delete"
+    when: logstash_patterns is defined
+    changed_when: False
+    notify:
+      - restart logstash
+    tags: logstash_config
+
+  - name: Start logstash
+    service: name=logstash enabled=yes state=started

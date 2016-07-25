@@ -1,0 +1,65 @@
+---
+
+  haproxy_defaults:
+    mode: http
+    options:
+      - httplog
+      - dontlognull
+      - httpclose
+      - forwardfor
+      - redispatch
+    retries: 3
+    timeout:
+      - param: connect
+        value: 5000
+      - param: server
+        value: 50000
+    maxconn: 10000
+  haproxy_listen:
+   - name: logstash
+     bind:
+       - 127.0.0.1:6672
+     mode: tcp
+     description: Listening for logstashes
+     balance: leastconn
+     retries: 3
+     servers:
+      - name: 'rabbit-master'
+        ip: "{{ hostvars[groups['elasticsearch_masters'][0]]['ansible_template_host'] }}:5672"
+        params:
+          - check
+          - weight 255
+      - name: 'rabbit-slave-01'
+        ip: "{{ hostvars[groups['elasticsearch_masters'][1]]['ansible_template_host'] }}:5672"
+        params:
+          - check
+          - weight 255
+      - name: 'rabbit-slave-02'
+        ip: "{{ hostvars[groups['elasticsearch_masters'][2]]['ansible_template_host'] }}:5672"
+        params:
+          - check
+          - weight 255
+     options:
+       - clitcpka
+       - httplog
+       - dontlognull
+       - httpclose
+       - forwardfor
+       - redispatch
+     timeout:
+      - param: client
+        value: 3h
+      - param: server
+        value: 3h
+      - param: connect
+        value: 5000
+   - name: stats
+     bind:
+       - 0.0.0.0:8077
+     description: Listening for logstashes
+     stats:
+       - uri /stats
+       - realm Haproxy\ Statistics
+       - show-legends
+       - refresh 2s
+       - auth test:test

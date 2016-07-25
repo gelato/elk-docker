@@ -1,0 +1,20 @@
+---
+
+  - name: Add Kibana apt key.
+    apt_key: url=https://packages.elastic.co/GPG-KEY-elasticsearch state=present
+
+  - name: Install apt-transport-https dependency.
+    apt: name=apt-transport-https update_cache=yes state=latest install_recommends=no
+
+  - name: Install Kibana repository.
+    apt_repository: repo='deb http://packages.elastic.co/kibana/"{{ kibana_major_version }}"/debian stable main' state=present
+
+  - name: Install Kibana packages.
+    apt: name=kibana update_cache=yes state=latest install_recommends=no
+
+  - name: set Kibana configuration
+    template: src={{ kibana_vars_dir }}/kibana4.yml.j2 dest={{ kibana_path }}/config/kibana.yml mode=0644
+    notify: restart kibana service
+
+  - name: ensure kibana is started
+    service: name=kibana state=started enabled=yes

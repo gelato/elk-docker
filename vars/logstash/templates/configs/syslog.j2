@@ -1,0 +1,66 @@
+input {
+    rabbitmq {
+      host => "{{ rabbitmq_endpoint }}"
+      subscription_retry_interval_seconds => 5
+      ack => true
+      arguments => { "x-ha-policy" => "all" }
+      auto_delete => false
+      automatic_recovery => true
+      codec => "json"
+      connect_retry_interval => 1
+      connection_timeout => {{ logstash_rabbitmq_connection_timeout }}
+      durable => {{ logstash_exchange_durable | lower() }}
+      exchange => "{{ logstash_exchange_name }}"
+      heartbeat => {{ logstash_rabbitmq_heartbeat }}
+      key => "logstash-syslog"
+      metadata_enabled => "{{ logstash_rabbitmq_send_metadata | lower() }}"
+      user => "{{ logstash_rabbitmq_output_user }}"
+      password => "{{ logstash_rabbitmq_output_password }}"
+      queue => "logstash-syslog"
+      threads => "{{ logstash_rabbitmq_threads }}"
+      prefetch_count => "{{ logstash_prefetch_count }}"
+      vhost => "{{ logstash_rabbitmq_vhost }}"
+    }
+}
+
+filter {
+  if [type] == "linux-syslog" {
+    grok {
+      break_on_match => true
+      match => { "message" => "^%{TIMESTAMP_ISO8601:ts}\s*%{HOSTNAME:process_change_hostname}\s*/etc/init.d/%{WORD:process_change_init}:?\s*%{WORD:process_change_name}\s*%{WORD:process_change_state}\s*" }
+      add_tag => "process_change"
+      tag_on_failure => "logstash_syslog_parsefailure"
+      overwrite => [ "message" ]
+      add_field => [ "received_at", "%{@timestamp}" ]
+    }
+    grok {
+      break_on_match => true
+      match => {"message" => "^%{TIMESTAMP_ISO8601:ts}\s*%{IPORHOST:oom_kill_host}\s*%{WORD:oom_kill_call_type}:?\s*\[%{GREEDYDATA}\]\s* Out\s*of\s*memory:?\s*Kill\s*process\s*%{POSINT:oom_kill_pid}\s*\(%{PROG:oom_kill_name}\)\s*score\s*%{NUMBER:score}\s*or\s*sacrifice\s*child"}
+      add_tag => "oom_process_killed"
+      tag_on_failure => "logstash_syslog_parsefailure"
+      overwrite => [ "message" ]
+      add_field => [ "received_at", "%{@timestamp}" ]
+    }
+    grok {
+      break_on_match => true
+      match => {"message" => "^%{TIMESTAMP_ISO8601:ts}\s* %{IPORHOST:cronjob_host}\s*CRON\[%{POSINT}\]:?\s*\(%{USERNAME:cronjob_startedby}\)\s*CMD\s*\(%{GREEDYDATA:cronjob_message}\)\s*$"}
+      add_tag => "cron_job"
+      tag_on_failure => "logstash_syslog_parsefailure"
+      overwrite => [ "message" ]
+      add_field => [ "received_at", "%{@timestamp}" ]
+    }
+    grok {
+      match => { "message" => "^%{TIMESTAMP_ISO8601:ts}\s*%{SYSLOGHOST:syslog_hostname}\s*(%{PROG:syslog_program})?\s*(:?\[%{POSINT:syslog_pid}\])?:?\s*%{GREEDYDATA:syslog_message}[a-z]*\s*$" }
+      add_tag => "syslog_everything"
+      keep_empty_captures => "true"
+      tag_on_failure => "logstash_syslog_parsefailure"
+      overwrite => [ "message" ]
+      add_field => [ "received_at", "%{@timestamp}" ]
+    }
+    date {
+      match => [ "ts" , "ISO8601" ]
+      remove_field => "ts"
+    }
+  }
+
+}

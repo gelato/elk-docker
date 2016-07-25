@@ -1,0 +1,23 @@
+---
+
+  - name: Removing Plugins if they exist
+    action: >
+      shell bin/logstash-plugin uninstall "{{ item }}"
+      chdir="{{ logstash_install_dir }}"
+    with_items: "{{ logstash_plugins }}"
+    when: logstash_plugins is defined and update_plugins
+    ignore_errors: yes
+    notify:
+      - restart logstash
+    tags: logstash_config
+
+  - name: Installing Plugins by Name
+    action: >
+      shell bin/logstash-plugin install "{{ item }}"
+      chdir="{{ logstash_install_dir }}"
+    with_items: "{{ logstash_plugins }}"
+    when: logstash_plugins is defined and update_plugins
+    ignore_errors: no
+    notify:
+      - restart logstash
+    tags: logstash_config

@@ -1,0 +1,12 @@
+---
+- name: install webupd8 team java ppa (for oracle java)
+  apt_repository:
+    repo: "ppa:webupd8team/java"
+    state: present
+  when: java_needs_oracle
+
+- name: remove webupd8 team java ppa (for oracle java)
+  apt_repository:
+    repo: "ppa:webupd8team/java"
+    state: absent
+  when: java_cleanup and not java_needs_oracle

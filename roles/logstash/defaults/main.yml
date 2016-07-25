@@ -1,0 +1,58 @@
+---
+
+  logstash_endpoint_host_ip: ["192.168.0.170:9200", "192.168.0.171:9200", "192.168.0.172:9200"]
+  logstash_user: logstash
+  logstash_group: "{{ logstash_user }}"
+
+  logstash_log_dir: /var/log/logstash
+  logstash_home_dir: /var/lib/logstash
+  logstash_conf_dir: /etc/logstash/conf.d
+  logstash_install_dir: /opt/logstash
+  logstash_patterns_dir: /opt/logstash/patterns
+  logstash_pid_dir: /var/run
+
+  ####################
+  ##  Default Settings
+  logstash_javacmd: /usr/bin/java
+  logstash_opts:      []                # e.g. [ "--debug" ]
+  logstash_java_opts: ["-Dnetwordaddress.cache.ttl=1"]
+  logstash_heap_size: "512m"
+  logstash_nice:       19
+  logstash_open_files: 16384
+  logstash_use_gc_logging: false
+  logstash_kill_on_stop_timeout: 1
+
+  ############
+  ##  Package
+  logstash_version: "2.3"
+  logstash_signing_key_url: "https://packages.elastic.co/GPG-KEY-elasticsearch"
+  logstash_apt_repo: "deb http://packages.elastic.co/logstash/{{ logstash_version }}/debian stable main"
+  logstash_key_id: "D88E42B4"
+
+  ###########
+  ##  Configs
+  logstash_config_templates: "vars/logstash/templates/config"
+  logstash_pattern_templates: "vars/logstash/templates/patterns"
+  logstash_output_templates: "vars/logstash/templates/outputs"
+
+  ###########
+  ## Plugins
+  logstash_plugins:
+    - logstash-input-beats
+    - logstash-input-rabbitmq
+    - logstash-output-rabbitmq
+  remove_plugins: []
+  update_plugins: false
+
+  ############
+  ## RabbitMQ integration
+
+  logstash_exchange_name: "logstash_reciever"
+  logstash_exchange_durable: true
+  logstash_routing_key: "logstash"
+  logstash_prefetch_count: 20
+  logstash_rabbitmq_threads: 3
+  logstash_rabbitmq_heartbeat: 1
+  logstash_rabbitmq_connection_timeout: 3000
+  logstash_rabbitmq_port: 5672
+  logstash_rabbitmq_vhost: "logstash"

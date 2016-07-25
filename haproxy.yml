@@ -1,0 +1,10 @@
+---
+
+  - name: HAProxy
+    hosts: loadbalancers
+    become: True
+    vars_files:
+      - "vars/haproxy/haproxy.yml"
+    roles:
+     - role: haproxy
+       tags: haproxy_role
