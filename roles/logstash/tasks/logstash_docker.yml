@@ -1,6 +1,6 @@
 ---
 
-  - name: Get container
+  - name: Setup recievers
     docker:
       name: "{{ logstash_container_name }}"
       image: "logstash:{{ logstash_container_version }}"
@@ -9,6 +9,19 @@
       volumes:
         - "{{ logstash_conf_dir }}:/config-dir/{{ logstash_conf_type }}"
         - "/var/log/machines/{{ logstash_container_name }}:/var/log"
-      expose:
-        - 5000
+      ports:
+        - "{{ logstash_fb_input_port }}:{{ logstash_fb_translation_port }}"
       command: "logstash -f /config-dir/{{ logstash_conf_type }}"
+    when: logstash_fb_translation_port is defined and is_reciever
+
+  - name: Setup filters
+    docker:
+      name: "{{ logstash_container_name }}"
+      image: "logstash:{{ logstash_container_version }}"
+      state: started
+      pull: always
+      volumes:
+        - "{{ logstash_conf_dir }}:/config-dir/{{ logstash_conf_type }}"
+        - "/var/log/machines/{{ logstash_container_name }}:/var/log"
+      command: "logstash -f /config-dir/{{ logstash_conf_type }}"
+    when: is_filter

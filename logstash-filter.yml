@@ -9,6 +9,8 @@
         tags:
           - logstash_filter_role
           - logstash_stack
+        is_reciever: false
+        is_filter: true
         logstash_container_name: logstash-filter
         logstash_combined_configs:
             - syslog
