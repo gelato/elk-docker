@@ -4,13 +4,13 @@
     docker:
       name: "{{ logstash_container_name }}"
       image: "logstash:{{ logstash_container_version }}"
-      state: started
+      state: reloaded
       pull: always
       volumes:
         - "{{ logstash_conf_dir }}:/config-dir/{{ logstash_conf_type }}"
         - "/var/log/machines/{{ logstash_container_name }}:/var/log"
       ports:
-        - "{{ logstash_fb_input_port }}:{{ logstash_fb_translation_port }}"
+        - "{{ logstash_fb_translation_port }}:{{ logstash_fb_input_port }}"
       command: "logstash -f /config-dir/{{ logstash_conf_type }}"
     when: logstash_fb_translation_port is defined and is_reciever
 
@@ -18,7 +18,7 @@
     docker:
       name: "{{ logstash_container_name }}"
       image: "logstash:{{ logstash_container_version }}"
-      state: started
+      state: reloaded
       pull: always
       volumes:
         - "{{ logstash_conf_dir }}:/config-dir/{{ logstash_conf_type }}"

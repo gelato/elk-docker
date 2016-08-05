@@ -1,0 +1,60 @@
+---
+
+  - name: Setup rabbitmq master container
+    docker:
+      name: "rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      image: rabbitmq:latest
+      hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      env:
+        RABBITMQ_ERLANG_COOKIE: "{{ erlang_cookie }}"
+        RABBITMQ_DEFAULT_VHOST: "{{ item.name }}"
+        RABBITMQ_NODENAME: "{{ item.node }}"
+        RABBITMQ_HIPE_COMPILE: 1
+      state: reloaded
+      pull: always
+      volumes:
+        - "/var/log/machines/rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}:/var/log"
+      ports:
+        - 8080:15672
+        - 4369:4369
+        - 5671:5671
+        - 5672:5672
+        - 25672:25672
+    with_items: "{{ rabbitmq_vhost_definitions }}"
+    when: inventory_hostname == "{{ rabbitmq_master }}"
+
+  - name: Setup rabbitmq slave containers
+    docker:
+      name: "rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      image: rabbitmq:latest
+      hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      env:
+        RABBITMQ_ERLANG_COOKIE: "{{ erlang_cookie }}"
+        RABBITMQ_DEFAULT_VHOST: "{{ item.name }}"
+        RABBITMQ_NODENAME: "{{ item.node }}"
+        RABBITMQ_HIPE_COMPILE: 1
+      state: reloaded
+      pull: always
+      volumes:
+        - /opt/rabbit:/opt/rabbit
+      ports:
+        - 8080:15672
+        - 4369:4369
+        - 5671:5671
+        - 5672:5672
+        - 25672:25672
+      command: /opt/rabbit/join_cluster.sh
+    with_items: "{{ rabbitmq_vhost_definitions }}"
+    when: form_cluster and inventory_hostname != "{{ rabbitmq_master }}"
+
+  - name: Create RabbitMQ admin user | Configuration
+    command: >-
+       rabbitmqadmin -H localhost -P 8080
+       -u guest -p guest
+       declare user
+       name="{{ item.name }}"
+       password="{{ item.password }}"
+       tags="{{ item.tags }}"
+       --vhost="{{ item.vhost }}"
+       --node="{{ item.node }}"
+    with_items: "{{ rabbitmq_users_definitions }}"

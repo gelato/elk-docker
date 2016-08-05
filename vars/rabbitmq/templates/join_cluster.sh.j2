@@ -1,0 +1,8 @@
+#!/bin/bash
+
+rabbitmqctl reset
+service rabbitmqserver restart
+rabbitmqctl stop_app
+rabbitmqctl reset
+rabbitmqctl join_cluster 'rabbit@{{ rabbitmq_master }}'
+rabbitmqctl start_app

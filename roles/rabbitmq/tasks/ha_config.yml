@@ -1,81 +1,73 @@
 ---
 
-  - name: rabbitmq_ha_config | checking if rabbitmqadmin is installed
-    stat:
-      path: /usr/sbin/rabbitmqadmin
-    register: rabbitmqadmin_check
-
-  - name: rabbitmq_ha_config | install rabbitMQ admin
-    get_url:
-      url: "http://guest:guest@localhost:15672/cli/rabbitmqadmin"
-      dest: "/usr/sbin"
-    when: not rabbitmqadmin_check.stat.exists
-
-  - name: rabbitmq_ha_config | making executable rabbitMQ Admin
-    file:
-      path: "/usr/sbin/rabbitmqadmin"
-      owner: root
-      group: root
-      mode: 0755
-    notify: restart rabbitmq-server
-    when: not rabbitmqadmin_check.stat.exists
-
-  - name: rabbitmq_ha_config | creating queue(s)
-    rabbitmq_queue:
-      name: "{{ item.queue_name }}"
-      durable: "{{ item.durable|lower }}"
-      vhost: "{{ item.vhost }}"
-      state: present
-      login_host: localhost
-      login_user: "{{ item.user }}"
-      login_password: "{{ item.password }}"
-      message_ttl: "{{ central_queue_message_ttl }}"
+  - name: RabbitMQ HA | Creating queue(s)
+    command: >-
+       rabbitmqadmin -H localhost -P {{ rabbitmq_talking_port }}
+       -u {{ item.user }} -p {{ item.password }}
+       declare queue
+       name="{{ item.queue_name }}"
+       durable="{{ item.durable|lower }}"
+       auto_delete=false
+       --vhost="{{ item.vhost }}"
+       --node="{{ item.node }}"
     with_items: "{{ rabbitmq_config }}"
     when: inventory_hostname == "{{ rabbitmq_master }}"
-    notify: restart rabbitmq-server
     ignore_errors: true
 
-  - name: rabbitmq_ha_config | setting up ha on queue(s)
-    rabbitmq_policy:
-      name: "ha-all"
-      pattern: '.*'
-      tags: "{{ item.tags }}"
-      state: present
-      vhost: "{{ item.vhost }}"
-      apply_to: all
+  - name: RabbitMQ HA | setting up HA on queue(s)
+    command: >-
+       rabbitmqadmin -H localhost -P {{ rabbitmq_talking_port }}
+       -u {{ item.user }} -p {{ item.password }}
+       declare policy
+       name="ha-all"
+       pattern='.*'
+       apply-to="all"
+       definition='{"ha-mode":"all"}'
+       --vhost="{{ item.vhost }}"
     with_items: "{{ rabbitmq_config }}"
     when: inventory_hostname == "{{ rabbitmq_master }}"
-    notify: restart rabbitmq-server
     ignore_errors: true
 
-  - name: rabbitmq_ha_config | creating exchange(s)
-    rabbitmq_exchange:
-      name: "{{ item.exchange_name }}"
-      exchange_type: "{{ item.type }}"
-      vhost: "{{ item.vhost }}"
-      state: present
-      durable: true
-      login_host: localhost
-      login_user: "{{ item.user }}"
-      login_password: "{{ item.password }}"
+  - name: RabbitMQ HA | Create exchange(s)
+    command: >-
+       rabbitmqadmin -H localhost -P {{ rabbitmq_talking_port }}
+       -u {{ item.user }} -p {{ item.password }}
+       declare exchange
+       name="{{ item.exchange_name }}"
+       type="{{ item.type }}"
+       durable="{{ item.durable }}"
+       auto-delete="false"
+       internal="false"
+       --vhost="{{ item.vhost }}"
     with_items: "{{ rabbitmq_config }}"
     when: inventory_hostname == "{{ rabbitmq_master }}"
-    notify: restart rabbitmq-server
     ignore_errors: true
 
-  - name: rabbitmq_ha_config | creating binding(s)
-    rabbitmq_binding:
-      name: "{{ item.exchange_name }}"
-      destination: "{{ item.queue_name }}"
-      routing_key: "{{ item.routing_key }}"
-      destination_type: queue
-      vhost: "{{ item.vhost }}"
-      state: present
-      login_host: localhost
-      login_user: "{{ item.user }}"
-      login_password: "{{ item.password }}"
-    ignore_errors: true
+  - name: RabbitMQ HA | Create exchange(s)
+    command: >-
+       rabbitmqadmin -H localhost -P {{ rabbitmq_talking_port }}
+       -u {{ item.user }} -p {{ item.password }}
+       declare exchange
+       name="{{ item.exchange_name }}"
+       type="{{ item.type }}"
+       durable="{{ item.durable }}"
+       auto-delete="false"
+       internal="false"
+       --vhost="{{ item.vhost }}"
     with_items: "{{ rabbitmq_config }}"
     when: inventory_hostname == "{{ rabbitmq_master }}"
-    notify: restart rabbitmq-server
-    # notify: delete guest
+    ignore_errors: true
+
+  - name: RabbitMQ HA | Create binding(s)
+    command: >-
+       rabbitmqadmin -H localhost -P {{ rabbitmq_talking_port }}
+       -u {{ item.user }} -p {{ item.password }}
+       declare binding
+       source="{{ item.exchange_name }}"
+       destination_type="queue"
+       destination="{{ item.queue_name }}"
+       routing_key="{{ item.routing_key }}"
+       --vhost="{{ item.vhost }}"
+    with_items: "{{ rabbitmq_config }}"
+    when: inventory_hostname == "{{ rabbitmq_master }}"
+    ignore_errors: true
