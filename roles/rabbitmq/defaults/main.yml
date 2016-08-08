@@ -4,6 +4,7 @@
   # Playbook control
   # ################
 
+  rmq_version: 3.6.4
   form_cluster: false
   rabbitmq_config_templates: "vars/rabbitmq/templates"
   rabbitmq_startup_dir: "/opt/rabbit"
@@ -12,7 +13,7 @@
 
   rabbitmq_vhost_definitions:
   - name:    logstash
-    node:    "rabbit"
+    node:    rabbit
     user:    logstash
     password: logmqstash
 
@@ -20,9 +21,8 @@
   - vhost:    logstash
     user:     logstash
     password: logmqstash
-    node:     "rabbit"
-    tags:
-    - administrator
+    node:     rabbit
+    tags:   administrator
 
   rabbitmq_config:
     - queue_name: logstash
@@ -34,6 +34,11 @@
       user: logstash
       password: logmqstash
       node: "rabbit"
+      tags:
+        ha-mode: all
+        ha-sync-mode: automatic
+        max-length: 1000000
+        expires: 1296000000
 
   erlang_cookie: 3hmAI0LdywU3YUAI0L
 

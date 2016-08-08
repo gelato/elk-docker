@@ -1,23 +1,32 @@
 ---
 
   - name: RabbitMQ HA | Create vhost(s)
-    command: >-
-       rabbitmqadmin -H localhost -P {{ rabbitmq_talking_port }}
-       -u {{ item.user }} -p {{ item.password }}
-       declare vhost
-       name="{{ item.name }}"
-       tracing=no
+    uri:
+      url: "http://localhost:{{ rabbitmq_talking_port }}/api/vhosts/{{ item.name }}"
+      headers:
+        content-type: application/json
+      method: PUT
+      force_basic_auth: yes
+      user: guest
+      password: guest
+      status_code: 204
+      body_format: json
+      body: '{"tracing":false}'
     with_items: "{{ rabbitmq_vhost_definitions }}"
     run_once: true
+    when: form_cluster and inventory_hostname == "{{ rabbitmq_master }}"
 
   - name: RabbitMQ HA | Create vhost permissions(s)
-    command: >-
-       rabbitmqadmin -H localhost -P {{ rabbitmq_talking_port }}
-       -u {{ item.user }} -p {{ item.password }}
-       declare permission
-       vhost="{{ item.vhost | default('/', false) }}"
-       user="{{ item.user }}"
-       configure="{{ item.configure_priv | default('.*') }}"
-       write={{ item.write_priv | default('.*') }}"
-       read="{{ item.read_priv | default('.*') }}"
+    uri:
+      url: "http://localhost:{{ rabbitmq_talking_port }}/api/permissions/{{ item.vhost }}/{{ item.user }}"
+      headers:
+        content-type: application/json
+      method: PUT
+      force_basic_auth: yes
+      user: guest
+      password: guest
+      status_code: 204
+      body_format: json
+      body: '{"configure":".*","write":".*","read":".*"}'
     with_items: "{{ rabbitmq_users_definitions }}"
+    when: form_cluster and inventory_hostname == "{{ rabbitmq_master }}"

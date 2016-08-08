@@ -3,7 +3,7 @@
   - name: Setup rabbitmq master container
     docker:
       name: "rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
-      image: rabbitmq:latest
+      image: "rabbitmq:{{ rmq_version }}-management"
       hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
       env:
         RABBITMQ_ERLANG_COOKIE: "{{ erlang_cookie }}"
@@ -14,8 +14,9 @@
       pull: always
       volumes:
         - "/var/log/machines/rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}:/var/log"
+        - /etc/hosts:/etc/hosts
       ports:
-        - 8080:15672
+        - "{{ rabbitmq_talking_port }}:15672"
         - 4369:4369
         - 5671:5671
         - 5672:5672
@@ -26,7 +27,7 @@
   - name: Setup rabbitmq slave containers
     docker:
       name: "rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
-      image: rabbitmq:latest
+      image: "rabbitmq:{{ rmq_version }}-management"
       hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
       env:
         RABBITMQ_ERLANG_COOKIE: "{{ erlang_cookie }}"
@@ -37,24 +38,47 @@
       pull: always
       volumes:
         - /opt/rabbit:/opt/rabbit
+        - /etc/hosts:/etc/hosts
       ports:
-        - 8080:15672
+        - "{{ rabbitmq_talking_port }}:15672"
         - 4369:4369
         - 5671:5671
         - 5672:5672
         - 25672:25672
-      command: /opt/rabbit/join_cluster.sh
     with_items: "{{ rabbitmq_vhost_definitions }}"
     when: form_cluster and inventory_hostname != "{{ rabbitmq_master }}"
 
-  - name: Create RabbitMQ admin user | Configuration
+  - name: Waiting for RabbitMQ HIPE compilation
+    uri:
+       url: "http://127.0.0.1:8080/api/users"
+       status_code: 200
+       force_basic_auth: yes
+       user: guest
+       password: guest
+    register: result
+    until: result.status == 200
+    retries: 150
+    delay: 1
+    when: form_cluster and inventory_hostname == "{{ rabbitmq_master }}"
+
+  - name: Run clustering ssh script
     command: >-
-       rabbitmqadmin -H localhost -P 8080
-       -u guest -p guest
-       declare user
-       name="{{ item.name }}"
-       password="{{ item.password }}"
-       tags="{{ item.tags }}"
-       --vhost="{{ item.vhost }}"
-       --node="{{ item.node }}"
+     docker exec -idt
+     "rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+     /opt/rabbit/join_cluster.sh
+    when: form_cluster and inventory_hostname != "{{ rabbitmq_master }}"
+
+  - name: Create RabbitMQ admin user | REST Install
+    uri:
+      url: "http://localhost:{{ rabbitmq_talking_port }}/api/users/{{ item.user }}"
+      headers:
+        content-type: application/json
+      method: PUT
+      force_basic_auth: yes
+      user: guest
+      password: guest
+      status_code: 204
+      body_format: json
+      body: '{"password":"{{ item.password }}","tags":"{{ item.tags }}" }'
     with_items: "{{ rabbitmq_users_definitions }}"
+    when: form_cluster and inventory_hostname == "{{ rabbitmq_master }}"

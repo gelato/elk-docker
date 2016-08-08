@@ -9,5 +9,5 @@
     get_url:
       url: https://raw.githubusercontent.com/rabbitmq/rabbitmq-management/rabbitmq_v3_6_4/bin/rabbitmqadmin
       dest: /usr/bin/rabbitmqadmin
-      mode: 777
+      mode: 0777
     when: not rmqadmin_exists.stat.exists

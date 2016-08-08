@@ -1,73 +1,65 @@
 ---
 
   - name: RabbitMQ HA | Creating queue(s)
-    command: >-
-       rabbitmqadmin -H localhost -P {{ rabbitmq_talking_port }}
-       -u {{ item.user }} -p {{ item.password }}
-       declare queue
-       name="{{ item.queue_name }}"
-       durable="{{ item.durable|lower }}"
-       auto_delete=false
-       --vhost="{{ item.vhost }}"
-       --node="{{ item.node }}"
+    rabbitmq_queue:
+      name: "{{ item.queue_name }}"
+      login_user: "{{ item.user }}"
+      login_password: "{{ item.password }}"
+      login_host: localhost
+      login_port: "{{ rabbitmq_talking_port }}"
+      auto_delete: no
+      durable: "{{ item.durable|lower }}"
+      message_ttl: 20000
+      state: present
+      vhost: "{{ item.vhost }}"
     with_items: "{{ rabbitmq_config }}"
     when: inventory_hostname == "{{ rabbitmq_master }}"
     ignore_errors: true
 
-  - name: RabbitMQ HA | setting up HA on queue(s)
-    command: >-
-       rabbitmqadmin -H localhost -P {{ rabbitmq_talking_port }}
-       -u {{ item.user }} -p {{ item.password }}
-       declare policy
-       name="ha-all"
-       pattern='.*'
-       apply-to="all"
-       definition='{"ha-mode":"all"}'
-       --vhost="{{ item.vhost }}"
-    with_items: "{{ rabbitmq_config }}"
-    when: inventory_hostname == "{{ rabbitmq_master }}"
-    ignore_errors: true
-
-  - name: RabbitMQ HA | Create exchange(s)
-    command: >-
-       rabbitmqadmin -H localhost -P {{ rabbitmq_talking_port }}
-       -u {{ item.user }} -p {{ item.password }}
-       declare exchange
-       name="{{ item.exchange_name }}"
-       type="{{ item.type }}"
-       durable="{{ item.durable }}"
-       auto-delete="false"
-       internal="false"
-       --vhost="{{ item.vhost }}"
+  - name: RabbitMQ HA | Setting up HA on queue(s)
+    uri:
+      url: "http://localhost:{{ rabbitmq_talking_port }}/api/policies/{{ item.vhost }}/ha-all"
+      headers:
+        content-type: application/json
+      method: PUT
+      force_basic_auth: yes
+      user: guest
+      password: guest
+      status_code: 204
+      body_format: json
+      body: '{"pattern":".*", "definition":{"ha-mode":"all"}, "apply-to":"all"}'
     with_items: "{{ rabbitmq_config }}"
     when: inventory_hostname == "{{ rabbitmq_master }}"
     ignore_errors: true
 
   - name: RabbitMQ HA | Create exchange(s)
-    command: >-
-       rabbitmqadmin -H localhost -P {{ rabbitmq_talking_port }}
-       -u {{ item.user }} -p {{ item.password }}
-       declare exchange
-       name="{{ item.exchange_name }}"
-       type="{{ item.type }}"
-       durable="{{ item.durable }}"
-       auto-delete="false"
-       internal="false"
-       --vhost="{{ item.vhost }}"
+    rabbitmq_exchange:
+      name: "{{ item.exchange_name }}"
+      auto_delete: no
+      durable: "{{ item.durable }}"
+      exchange_type: "{{ item.type }}"
+      login_host: localhost
+      login_port: "{{ rabbitmq_talking_port }}"
+      login_user: "{{ item.user }}"
+      login_password: "{{ item.password }}"
+      vhost: "{{ item.vhost }}"
+      state: present
     with_items: "{{ rabbitmq_config }}"
     when: inventory_hostname == "{{ rabbitmq_master }}"
     ignore_errors: true
 
   - name: RabbitMQ HA | Create binding(s)
-    command: >-
-       rabbitmqadmin -H localhost -P {{ rabbitmq_talking_port }}
-       -u {{ item.user }} -p {{ item.password }}
-       declare binding
-       source="{{ item.exchange_name }}"
-       destination_type="queue"
-       destination="{{ item.queue_name }}"
-       routing_key="{{ item.routing_key }}"
-       --vhost="{{ item.vhost }}"
+    rabbitmq_binding:
+      name: "{{ item.exchange_name }}"
+      destination: "{{ item.queue_name }}"
+      destination_type: queue
+      login_host: localhost
+      login_port: "{{ rabbitmq_talking_port }}"
+      login_user: "{{ item.user }}"
+      login_password: "{{ item.password }}"
+      routing_key: "{{ item.routing_key }}"
+      vhost: "{{ item.vhost }}"
+      state: present
     with_items: "{{ rabbitmq_config }}"
     when: inventory_hostname == "{{ rabbitmq_master }}"
     ignore_errors: true

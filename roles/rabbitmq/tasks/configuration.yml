@@ -11,9 +11,9 @@
       - "/var/log/machines/rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
       - "{{ rabbitmq_startup_dir }}"
 
-  - name: Check if rabbitmqadmin already installed
+  - name: Check if startup script already present
     stat:
-      path: "{{ rabbitmq_config_templates }}/join_cluster.sh"
+      path: "{{ rabbitmq_startup_dir }}/join_cluster.sh"
     register: rmqstartup_script
 
   - name: Create rabbitmq clustering script

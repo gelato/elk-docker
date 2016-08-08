@@ -3,8 +3,6 @@
   - include: configuration.yml
   - include: install/main.yml
 
-  - include: clustering.yml
-
   - include: vhost.yml
 
   - include: ha_config.yml
