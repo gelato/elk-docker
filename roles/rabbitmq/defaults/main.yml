@@ -8,6 +8,8 @@
   form_cluster: false
   rabbitmq_config_templates: "vars/rabbitmq/templates"
   rabbitmq_startup_dir: "/opt/rabbit"
+  docker_rmq_state: reloaded
+  rmq_hipe_compile: 0
 
   rabbitmq_talking_port: 8080
 

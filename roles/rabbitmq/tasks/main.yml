@@ -6,3 +6,12 @@
   - include: vhost.yml
 
   - include: ha_config.yml
+
+  - name: Avoid tasks replay when already clustered
+    file:
+      path: "{{ rabbitmq_startup_dir }}/clustered"
+      owner: root
+      group: root
+      mode: 0775
+      state: touch
+    when: form_cluster

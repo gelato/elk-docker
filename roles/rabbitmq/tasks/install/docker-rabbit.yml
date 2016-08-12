@@ -9,8 +9,8 @@
         RABBITMQ_ERLANG_COOKIE: "{{ erlang_cookie }}"
         RABBITMQ_DEFAULT_VHOST: "{{ item.name }}"
         RABBITMQ_NODENAME: "{{ item.node }}"
-        RABBITMQ_HIPE_COMPILE: 1
-      state: reloaded
+        RABBITMQ_HIPE_COMPILE: "{{ rmq_hipe_compile }}"
+      state: "{{ docker_rmq_state }}"
       pull: always
       volumes:
         - "/var/log/machines/rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}:/var/log"
@@ -33,8 +33,8 @@
         RABBITMQ_ERLANG_COOKIE: "{{ erlang_cookie }}"
         RABBITMQ_DEFAULT_VHOST: "{{ item.name }}"
         RABBITMQ_NODENAME: "{{ item.node }}"
-        RABBITMQ_HIPE_COMPILE: 1
-      state: reloaded
+        RABBITMQ_HIPE_COMPILE: "{{ rmq_hipe_compile }}"
+      state: "{{ docker_rmq_state }}"
       pull: always
       volumes:
         - /opt/rabbit:/opt/rabbit
@@ -48,7 +48,7 @@
     with_items: "{{ rabbitmq_vhost_definitions }}"
     when: form_cluster and inventory_hostname != "{{ rabbitmq_master }}"
 
-  - name: Waiting for RabbitMQ HIPE compilation
+  - name: "Waiting for RabbitMQ HIPE compilation on {{ hostvars[inventory_hostname]['inventory_hostname'] }}"
     uri:
        url: "http://127.0.0.1:8080/api/users"
        status_code: 200
@@ -59,14 +59,14 @@
     until: result.status == 200
     retries: 150
     delay: 1
-    when: form_cluster and inventory_hostname == "{{ rabbitmq_master }}"
+    when: rmq_hipe_compile > 0
 
   - name: Run clustering ssh script
     command: >-
      docker exec -idt
      "rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
      /opt/rabbit/join_cluster.sh
-    when: form_cluster and inventory_hostname != "{{ rabbitmq_master }}"
+    when: not clustered.stat.exists and (form_cluster and inventory_hostname != "{{ rabbitmq_master }}")
 
   - name: Create RabbitMQ admin user | REST Install
     uri:
@@ -81,4 +81,4 @@
       body_format: json
       body: '{"password":"{{ item.password }}","tags":"{{ item.tags }}" }'
     with_items: "{{ rabbitmq_users_definitions }}"
-    when: form_cluster and inventory_hostname == "{{ rabbitmq_master }}"
+    when: not clustered.stat.exists and (inventory_hostname == "{{ rabbitmq_master }}")

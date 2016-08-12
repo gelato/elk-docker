@@ -11,7 +11,7 @@
       - "/var/log/machines/rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
       - "{{ rabbitmq_startup_dir }}"
 
-  - name: Check if startup script already present
+  - name: Check if clustering script already present
     stat:
       path: "{{ rabbitmq_startup_dir }}/join_cluster.sh"
     register: rmqstartup_script
@@ -24,3 +24,22 @@
       group: "root"
       mode: 0775
     when: not rmqstartup_script.stat.exists
+
+  - name: Create rabbitmq docker upstart script
+    template:
+      src: "{{ rabbitmq_config_templates }}/rmq-upstart.conf.j2"
+      dest: /etc/init/rmq-upstart.conf
+      owner: "root"
+      group: "root"
+      mode: 0775
+
+  - name: Enable rmq-docker upstart service
+    service:
+      name: rmq-upstart
+      enabled: yes
+      state: started
+
+  - name: Check if clustering script already present
+    stat:
+      path: "{{ rabbitmq_startup_dir }}/clustered"
+    register: clustered

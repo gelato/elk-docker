@@ -2,4 +2,5 @@
 
   form_cluster: true
   rmq_version: 3.6.4
-  
+  docker_rmq_state: started
+  rmq_hipe_compile: 1

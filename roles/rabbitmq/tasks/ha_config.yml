@@ -13,7 +13,7 @@
       state: present
       vhost: "{{ item.vhost }}"
     with_items: "{{ rabbitmq_config }}"
-    when: inventory_hostname == "{{ rabbitmq_master }}"
+    when: not clustered.stat.exists and (inventory_hostname == "{{ rabbitmq_master }}")
     ignore_errors: true
 
   - name: RabbitMQ HA | Setting up HA on queue(s)
@@ -29,7 +29,7 @@
       body_format: json
       body: '{"pattern":".*", "definition":{"ha-mode":"all"}, "apply-to":"all"}'
     with_items: "{{ rabbitmq_config }}"
-    when: inventory_hostname == "{{ rabbitmq_master }}"
+    when: not clustered.stat.exists and (inventory_hostname == "{{ rabbitmq_master }}")
     ignore_errors: true
 
   - name: RabbitMQ HA | Create exchange(s)
@@ -45,7 +45,7 @@
       vhost: "{{ item.vhost }}"
       state: present
     with_items: "{{ rabbitmq_config }}"
-    when: inventory_hostname == "{{ rabbitmq_master }}"
+    when: not clustered.stat.exists and (inventory_hostname == "{{ rabbitmq_master }}")
     ignore_errors: true
 
   - name: RabbitMQ HA | Create binding(s)
@@ -61,5 +61,5 @@
       vhost: "{{ item.vhost }}"
       state: present
     with_items: "{{ rabbitmq_config }}"
-    when: inventory_hostname == "{{ rabbitmq_master }}"
+    when: not clustered.stat.exists and (inventory_hostname == "{{ rabbitmq_master }}")
     ignore_errors: true
