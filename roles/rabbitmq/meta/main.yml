@@ -3,4 +3,3 @@
   dependencies:
     - { role: tzdata }
     - { role: hosts }
-    - { role: docker }

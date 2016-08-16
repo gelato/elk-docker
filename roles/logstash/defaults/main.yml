@@ -5,13 +5,14 @@
   logstash_user: root
   logstash_group: root
 
+  logstash_host_patterns_dir: /opt/logstash/patterns
   logstash_conf_dir: /opt/logstash/conf.d
-  logstash_patterns_dir: /opt/logstash/patterns
-  logstash_container_version: 2.3.3
+  logstash_patterns_dir: /config-dir/patterns
+  logstash_container_version: 2.3.4
 
   ###########
   ##  Configs
-  logstash_config_templates: "vars/logstash/templates/config"
+  logstash_config_templates: "vars/logstash/templates/configs"
   logstash_pattern_templates: "vars/logstash/templates/patterns"
   logstash_output_templates: "vars/logstash/templates/outputs"
 

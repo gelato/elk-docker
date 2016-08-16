@@ -24,7 +24,6 @@
           - linux-syslog
           - nginx
 
-        logstash_conf_dir: /opt/logstash/conf.d/reciever
         logstash_conf_type: reciever
 
       - role: tzdata

@@ -29,7 +29,7 @@ filter {
          match => { "message" => "%{NGINXACCESS}" }
          tag_on_failure => "logstash_nginx_access_parsefailure"
          add_tag => "logstash_nginx_access"
-         patterns_dir => "/opt/logstash/patterns"
+         patterns_dir => "{{ logstash_patterns_dir }}"
          add_field => [ "received_at", "%{@timestamp}" ]
     }
     mutate {
@@ -53,7 +53,7 @@ filter {
           match => {"message" => "%{NGINXERROR}"}
           tag_on_failure => "logstash_nginx_error_parsefailure"
           add_tag => "logstash_nginx_error"
-          patterns_dir => "/opt/logstash/patterns"
+          patterns_dir => "{{ logstash_patterns_dir }}"
           add_field => [ "received_at", "%{@timestamp}" ]
       }
       geoip {

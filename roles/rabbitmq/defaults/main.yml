@@ -30,7 +30,7 @@
     - queue_name: logstash
       durable: true
       exchange_name: logstash_reciever
-      type: direct
+      type: fanout
       routing_key: logstash
       vhost: logstash
       user: logstash

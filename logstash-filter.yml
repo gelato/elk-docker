@@ -34,7 +34,6 @@
           - "{{ hostvars[groups['elasticsearch_masters'][2]]['ansible_template_host'] }}:9200"
         rabbitmq_endpoint: "{{ hostvars[groups['rabbitmq'][0]]['ansible_template_host'] }}"
 
-        logstash_conf_dir: /opt/logstash/conf.d/filter
         logstash_conf_type: filter
 
       - role: tzdata

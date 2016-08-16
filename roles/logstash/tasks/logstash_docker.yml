@@ -1,27 +1,29 @@
 ---
 
-  - name: Setup recievers
+  - name: Start reciever containers
     docker:
       name: "{{ logstash_container_name }}"
-      image: "logstash:{{ logstash_container_version }}"
-      state: reloaded
-      pull: always
       volumes:
-        - "{{ logstash_conf_dir }}:/config-dir/{{ logstash_conf_type }}"
+        - "{{ logstash_conf_dir }}/{{ logstash_conf_type }}:/config-dir"
+        - "{{ logstash_host_patterns_dir }}:/config-dir/patterns"
         - "/var/log/machines/{{ logstash_container_name }}:/var/log"
+      image: "logstash:{{ logstash_container_version }}"
+      state: running
+      pull: always
       ports:
         - "{{ logstash_fb_translation_port }}:{{ logstash_fb_input_port }}"
-      command: "logstash -f /config-dir/{{ logstash_conf_type }}"
+      command: "logstash -f /config-dir"
     when: logstash_fb_translation_port is defined and is_reciever
 
-  - name: Setup filters
+  - name: Start filter containers
     docker:
       name: "{{ logstash_container_name }}"
-      image: "logstash:{{ logstash_container_version }}"
-      state: reloaded
-      pull: always
       volumes:
-        - "{{ logstash_conf_dir }}:/config-dir/{{ logstash_conf_type }}"
+        - "{{ logstash_conf_dir }}/{{ logstash_conf_type }}:/config-dir"
+        - "{{ logstash_host_patterns_dir }}:/config-dir/patterns"
         - "/var/log/machines/{{ logstash_container_name }}:/var/log"
-      command: "logstash -f /config-dir/{{ logstash_conf_type }}"
+      image: "logstash:{{ logstash_container_version }}"
+      state: running
+      pull: always
+      command: "logstash -f /config-dir"
     when: is_filter

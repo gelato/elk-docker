@@ -1,9 +1,6 @@
 ---
 
-  logstash_version: "2.3"
-  logstash_output_templates: vars/logstash/templates/outputs
-  logstash_config_templates:  vars/logstash/templates/configs
-  logstash_pattern_templates: vars/logstash/templates/patterns
+  logstash_container_version: 2.3.4
   logstash_workers: 5
   update_plugins: false
   #From logstash to rabbitmq
