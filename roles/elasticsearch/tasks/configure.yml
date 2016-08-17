@@ -1,0 +1,48 @@
+---
+
+  - name: Ensure Elasticsearch host-dirs are created
+    file:
+      path: "{{ item }}"
+      owner: root
+      group: root
+      mode: 0775
+      state: directory
+    with_items:
+      - "/var/log/machines/elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      - "{{ elasticsearch_host_path_conf }}"
+      - "{{ elastic_default_conf_host }}"
+      - "{{ elastic_host_data_dir }}"
+      - "{{ elastic_host_plugins_dir }}"
+
+  - name: Configure Elasticsearch default config
+    template:
+     src: "{{ elastic_templates_dir }}/elasticsearch.j2"
+     dest: "{{ elastic_default_conf_host }}/elasticsearch"
+     owner: root
+     group: root
+     mode: 0644
+    notify:
+      - restart elasticsearch
+
+  - name: Create Elasticsearch config
+    template:
+     src: "{{ elastic_templates_dir }}/elasticsearch.yml.j2"
+     dest: "{{ elasticsearch_host_path_conf }}/elasticsearch.yml"
+     owner: root
+     group: root
+     mode: 0644
+    notify:
+      - restart elasticsearch
+
+  - name: Create Elasticsearch config
+    template:
+     src: "{{ elastic_templates_dir }}/logging.yml.j2"
+     dest: "{{ elasticsearch_host_path_conf }}/logging.yml"
+     owner: root
+     group: root
+     mode: 0644
+    notify:
+      - restart elasticsearch
+
+  # - name: start elasticsearch
+  #   service: name=elasticsearch state=started enabled=True

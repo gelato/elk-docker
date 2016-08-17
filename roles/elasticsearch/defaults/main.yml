@@ -1,8 +1,13 @@
 ---
-
+elastic_templates_dir: 'vars/elasticsearch/templates'
+docker_elastic_state: running
 # paths
-elasticsearch_path_conf: '/etc/elasticsearch'
-elasticsearch_path_data: '/var/lib/elasticsearch'
+elastic_host_plugins_dir: '/opt/elasticsearch/plugins'
+elastic_host_data_dir: '/opt/elasticsearch/esdata'
+elasticsearch_host_path_conf: '/opt/elasticsearch'
+elastic_default_conf_host: '/opt/elasticsearch/default'
+elasticsearch_path_conf: '/usr/share/elasticsearch/config'
+elasticsearch_path_data: '/usr/share/elasticsearch/data'
 elasticsearch_path_logs: '/var/log/elasticsearch'
 elasticsearch_path_work: '/tmp/elasticsearch'
 elasticsearch_path_home: '/usr/share/elasticsearch'
@@ -19,9 +24,7 @@ elasticsearch_group_loadbalancer: 'elasticsearch_loadbalancer'
 
 # ---- Version ----
 
-elasticsearch_major_version: '2.x'
-elasticsearch_version: '2.3.2'
-elasticsearch_state: 'present'
+elasticsearch_version: '2.3.5'
 
 
 # ---- Cluster ----
@@ -103,31 +106,6 @@ install_core_plugins: false
 elasticsearch_core_plugins:
   - marvel-agent
   - license
-# ---- Libraries ----
-
-# Examples:
-#
-# The url is required, everything else is optional.
-#
-#
-#elasticsearch_libs:
-#  url: 'http://somewebsite.com/foo.jar'
-#
-#
-#elasticsearch_libs:
-#  url: 'http://somewebsite.com/foo.jar'
-#  file: 'differentfilename.jar'
-#  delete: True
-#
-#
-#elasticsearch_libs:
-#  url: 'http://somewebsite.com/foo.jar'
-#  user: 'basicauthuser'
-#  pass: 'basicauthpass'
-
-# A list of libraries to install or delete.
-elasticsearch_libs: []
-
 
 # ---- Memory and filesystem ----
 
@@ -158,8 +136,6 @@ elasticsearch_http_port: '9200-9300'
 elasticsearch_compress: false
 elasticsearch_http_max_content_length: '100mb'
 elasticsearch_http_enabled: true
-
-# Which hosts are allowed to connect through the firewall?
 
 # This is used for inter-node communication and in multicast's case, discovery.
 elasticsearch_node_allow: []

@@ -1,16 +1,33 @@
 ---
+  
+   # container version
+   elasticsearch_version: 2.3.5
 
-   elasticsearch_version: 2.3.3
+   # index settings
    elasticsearch_index_shards: 18
-   elasticsearch_index_replicas: 2
+   elasticsearch_index_replicas: 3
+
+   # lock memory before startup
    elasticsearch_memory_mlockall: false
    elasticsearch_memory_heap_size_multiplier: 0.1
    elasticsearch_cluster_name: 'Nidhoggur'
+
+   # plugins
    elasticsearch_plugins:
        - name: 'lmenezes/elasticsearch-kopf/2.1.1'
        - name: 'royrusso/elasticsearch-hq/v2.0.3'
-   elasticsearch_libs: []
+   # official plugins
    install_core_plugins: false
    elasticsearch_core_plugins:
      - marvel-agent
      - license
+
+   # memory
+   elasticsearch_memory_heap_size: '{{ (ansible_memtotal_mb | int * elasticsearch_memory_heap_size_multiplier) | round | int }}m'
+
+   # discovery
+   elasticsearch_discovery_multicast_port: 54328
+
+   # networking
+   elasticsearch_publish_host: 0.0.0.0
+   elasticsearch_bind_host: 0.0.0.0

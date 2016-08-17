@@ -1,6 +1,6 @@
 ---
 
-  - hosts: elasticsearch_master
+  - hosts: elasticsearch_masters
     become: True
     vars_files:
       - "vars/elasticsearch/elastic.yml"

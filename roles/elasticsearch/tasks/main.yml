@@ -1,8 +1,7 @@
 ---
-- include: install.yml
 
-- include: plugins.yml
-  when: elasticsearch_plugins
+  - include: configure.yml
+  - include: docker-elastic.yml
 
-- include: libs.yml
-  when: elasticsearch_libs
+  - include: plugins.yml
+    when: elasticsearch_plugins

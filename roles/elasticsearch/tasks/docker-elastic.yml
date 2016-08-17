@@ -1,0 +1,20 @@
+---
+
+  - name: Get and start Elasticsearch container
+    docker:
+      name: "elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      volumes:
+        - "/var/log/machines/elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}:/var/log/elasticsearch"
+        - /etc/hosts:/etc/hosts
+        - "{{ elastic_default_conf_host }}/elasticsearch:/etc/default/elasticsearch"
+        - "{{ elasticsearch_host_path_conf }}:{{ elasticsearch_path_conf }}"
+        - "{{ elastic_host_data_dir }}:{{ elasticsearch_path_data }}"
+        - "{{ elastic_host_plugins_dir }}:{{ elasticsearch_path_plugins }}"
+      image: "elasticsearch:{{ elasticsearch_version }}"
+      hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      state: "{{ docker_elastic_state }}"
+      pull: always
+      ports:
+        - 9200:9200
+        - 9300:9300
+        - 9400:9400

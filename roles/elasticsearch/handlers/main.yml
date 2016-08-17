@@ -1,6 +1,7 @@
 ---
-- name: restart elasticsearch
-  service: >
-    name=elasticsearch
-    state=restarted
-    enabled=yes
+
+  - name: restart elasticsearch
+    docker:
+      name: "elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      state: restarted
+      image: "elasticsearch:{{ elasticsearch_version }}"
