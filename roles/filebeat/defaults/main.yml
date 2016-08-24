@@ -1,67 +1,63 @@
 ---
 
-filebeat_user:  filebeat
-filebeat_group: filebeat
+  filebeat_state: running
+  filebeat_es_host: "localhost"
+  filebeat_template_dir: "vars/filebeat/templates"
 
-# Create the filebeat user and group
-filebeat_create_user: true
+  filebeat_version: 1.2.3
 
-filebeat_version: 1.2.2
+  filebeat_start_at_boot: True
 
-filebeat_start_at_boot: True
+  filebeat_config_dir: "/opt/filebeat"
 
-filebeat_upgrade: false
-
-filebeat_config_dir: "/etc/filebeat"
-
-filebeat_config_registry_file: "/var/lib/filebeat/registry"
+  filebeat_config_registry_file: "/registry"
 
 
-filebeat_prospectors:
-  - paths:
-      - '/var/log/syslog'
-    encoding: 'plain'
-    input_type: 'log'
-    document_type: 'linux-syslog'
-    prospector_fields:
-      file-name: syslog
-  - paths:
-      - '/var/log/auth.log'
-    encoding: 'plain'
-    input_type: 'log'
-    document_type: 'linux-authlog'
-    prospector_fields:
-      file-name: auth.log
+  filebeat_prospectors:
+    - paths:
+        - '/var/log/syslog'
+      encoding: 'plain'
+      input_type: 'log'
+      document_type: 'linux-syslog'
+      prospector_fields:
+        file-name: syslog
+    - paths:
+        - '/var/log/auth.log'
+      encoding: 'plain'
+      input_type: 'log'
+      document_type: 'linux-authlog'
+      prospector_fields:
+        file-name: auth.log
 
-filebeat_outputs:
-  - name: logstash
-    workers: 5
-    compression_level: 3
-    loadbalance: true
-  - name: file
-    path: "/tmp/filebeat"
-    filename: filebeat.out
-    rotate_every_kb: 10000
-    number_of_files: 7
+  filebeat_outputs:
+    - name: logstash
+      workers: 5
+      compression_level: 3
+      loadbalance: true
+    - name: file
+      path: "/tmp/filebeat"
+      filename: filebeat.out
+      rotate_every_kb: 10000
+      number_of_files: 7
 
-filebeat_destinations:
-  - 192.168.0.173
-  - 192.168.0.174
+  filebeat_destinations:
+    - 192.168.0.173
+    - 192.168.0.174
 
-logstash_port: 5000
+  logstash_port: 5000
 
-filebeat_bulk_max_size: 1024
+  filebeat_bulk_max_size: 1024
 
-filebeat_spool_size: 2048
+  filebeat_spool_size: 2048
 
-filebeat_idle_timeout: '5s'
+  filebeat_idle_timeout: '5s'
 
-filebeat_enable_tls: no
+  filebeat_enable_tls: no
 
-filebeat_certificates_dir: /etc/ssl/certs/tls/filebeat
+  filebeat_certificates_dir: /etc/ssl/certs/tls/filebeat
 
-prospector_fields:
-    default1: nonedefault
-    default2: none1
+  prospector_fields:
+      customkey1: fieldvalue
+      customkey2: fieldvalue
 
-# vi:ts=2:sw=2:et:ft=yaml
+  # vi:ts=2:sw=2:et:ft=yaml

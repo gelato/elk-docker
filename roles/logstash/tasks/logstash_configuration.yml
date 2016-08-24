@@ -23,7 +23,7 @@
     when: logstash_combined_configs
     with_items: "{{ logstash_combined_configs }}"
     notify:
-      - restart logstash
+      - "restart {{ logstash_container_name }}"
     tags: logstash_config
 
   - name: Create logstash patterns
@@ -36,7 +36,7 @@
     when: logstash_patterns
     with_items: "{{ logstash_patterns }}"
     notify:
-      - restart logstash
+      - "restart {{ logstash_container_name }}"
     tags: logstash_config
 
   - name: Create logstash output configs
@@ -51,8 +51,7 @@
     when: outputs_to_install
     with_items: "{{ outputs_to_install }}"
     notify:
-      - validate logstash config
-      - restart logstash
+      - "restart {{ logstash_container_name }}"
     tags: logstash_config
 
   - name: Remove unmanaged files from logstash config dir
@@ -60,7 +59,7 @@
     when: outputs_to_install is defined and logstash_combined_configs is defined
     changed_when: False
     notify:
-      - restart logstash
+      - "restart {{ logstash_container_name }}"
     tags: logstash_config
 
   - name: Remove unmanaged patterns
@@ -68,5 +67,19 @@
     when: logstash_patterns is defined
     changed_when: False
     notify:
-      - restart logstash
+      - "restart {{ logstash_container_name }}"
     tags: logstash_config
+
+  - name: Create logstash-docker upstart script
+    template:
+      src: "{{ logstash_templates }}/logstash-upstart.conf.j2"
+      dest: "/etc/init/{{ logstash_container_name }}.conf"
+      owner: "root"
+      group: "root"
+      mode: 0775
+
+  - name: Enable logstash-docker upstart service
+    service:
+      name: "{{ logstash_container_name }}"
+      enabled: yes
+      state: started

@@ -1,7 +1,7 @@
 ---
   # handlers file for rabbitmq
-  - name: restart rabbitmq-server
-    service: name=rabbitmq-server state=restarted enabled=yes
+  - name: restart rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}
+    shell: docker restart rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}
 
   - name: delete guest
     rabbitmq_user:

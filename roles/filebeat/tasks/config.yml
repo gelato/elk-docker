@@ -1,5 +1,17 @@
 ---
-  - name: Filebeat configuration file
+
+  - name: Ensure filebeat host-dirs are created
+    file:
+      path: "{{ item }}"
+      owner: root
+      group: root
+      mode: 0775
+      state: directory
+    with_items:
+      - "/var/log/machines/filebeat-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      - "{{ filebeat_config_dir }}"
+
+  - name: Prepare filebeat configuration file
     template:
       src: "{{ filebeat_template_dir }}/filebeat.yml.j2"
       dest: "{{ filebeat_config_dir }}/filebeat.yml"
@@ -10,5 +22,32 @@
       - filebeat restart
     tags:
       - filebeat_config
+
+  - name: Transfer filebeat template for ES
+    template:
+      src: "{{ filebeat_template_dir }}/filebeat.template.json.j2"
+      dest: "{{ filebeat_config_dir }}/filebeat.template.json"
+      owner: root
+      group: root
+      mode: 0777
+    when: push_template and inventory_hostname == groups['filebeat'][0]
+
+  - name: Put filebeat template into ES
+    command: curl -XPUT 'http://{{ filebeat_es_host }}:9200/_template/filebeat' -d@{{ filebeat_config_dir }}/filebeat.template.json
+    when: push_template and inventory_hostname == groups['filebeat'][0]
+
+  - name: Create filebeat docker upstart script
+    template:
+      src: "{{ filebeat_template_dir }}/fb-upstart.conf.j2"
+      dest: "/etc/init/filebeat-{{ hostvars[inventory_hostname]['inventory_hostname'] }}.conf"
+      owner: "root"
+      group: "root"
+      mode: 0775
+
+  - name: Enable fb-docker upstart service
+    service:
+      name: "filebeat-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      enabled: yes
+      state: started
 
 # vi:ts=2:sw=2:et:ft=yaml

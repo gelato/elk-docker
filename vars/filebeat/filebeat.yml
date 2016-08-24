@@ -1,4 +1,3 @@
-filebeat_template_dir: "vars/filebeat/templates"
 filebeat_destinations:
   - "{{ hostvars[groups['logstash-reciever'][0]]['ansible_template_host'] }}"
   - "{{ hostvars[groups['logstash-reciever'][1]]['ansible_template_host'] }}"

@@ -3,6 +3,10 @@
   - name: Start reciever containers
     docker:
       name: "{{ logstash_container_name }}"
+      expose:
+        - 5000
+      ports:
+        - 5000:5000
       volumes:
         - "{{ logstash_conf_dir }}/{{ logstash_conf_type }}:/config-dir"
         - "{{ logstash_host_patterns_dir }}:/config-dir/patterns"
@@ -10,10 +14,8 @@
       image: "logstash:{{ logstash_container_version }}"
       state: running
       pull: always
-      ports:
-        - "{{ logstash_fb_translation_port }}:{{ logstash_fb_input_port }}"
       command: "logstash -f /config-dir"
-    when: logstash_fb_translation_port is defined and is_reciever
+    when: is_reciever and not is_filter
 
   - name: Start filter containers
     docker:
@@ -26,4 +28,4 @@
       state: running
       pull: always
       command: "logstash -f /config-dir"
-    when: is_filter
+    when: is_filter and not is_reciever

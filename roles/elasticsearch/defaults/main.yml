@@ -46,7 +46,7 @@ elasticsearch_node_max_local_storage_nodes: 50
 # ---- Index ----
 
 elasticsearch_index_shards: 18
-elasticsearch_index_replicas: 3
+elasticsearch_index_replicas: 2
 
 
 # ---- Plugins ----
@@ -178,7 +178,7 @@ elasticsearch_discovery_zen_minimum_master_nodes: 3
 elasticsearch_discovery_zen_ping_timeout: '3s'
 elasticsearch_discovery_zen_multicast_enabled: false
 
-elasticsearch_discovery_zen_ping_unicast_hosts: "{{ hostvars | fetchlistfromdict(groups.elasticsearch_master) | map(attribute='ansible_default_ipv4') | map(attribute='address') | list }}"
+elasticsearch_discovery_zen_ping_unicast_hosts: "{{ hostvars | fetchlistfromdict(groups.elasticsearch_masters) | map(attribute='ansible_eth1.ipv4') | map(attribute='address') | list }}"
 
 # ---- Slow log ----
 

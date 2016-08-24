@@ -1,7 +1,4 @@
 ---
 
-  - name: restart elasticsearch
-    docker:
-      name: "elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
-      state: restarted
-      image: "elasticsearch:{{ elasticsearch_version }}"
+  - name: restart elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}
+    shell: docker restart elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}

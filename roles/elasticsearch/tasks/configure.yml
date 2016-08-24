@@ -5,7 +5,7 @@
       path: "{{ item }}"
       owner: root
       group: root
-      mode: 0775
+      mode: 0777
       state: directory
     with_items:
       - "/var/log/machines/elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
@@ -34,7 +34,7 @@
     notify:
       - restart elasticsearch
 
-  - name: Create Elasticsearch config
+  - name: Create Elasticsearch logger config
     template:
      src: "{{ elastic_templates_dir }}/logging.yml.j2"
      dest: "{{ elasticsearch_host_path_conf }}/logging.yml"
@@ -44,5 +44,16 @@
     notify:
       - restart elasticsearch
 
-  # - name: start elasticsearch
-  #   service: name=elasticsearch state=started enabled=True
+  - name: Create elastic-docker upstart script
+    template:
+      src: "{{ elastic_templates_dir }}/elastic-upstart.conf.j2"
+      dest: "/etc/init/elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}.conf"
+      owner: "root"
+      group: "root"
+      mode: 0775
+
+  - name: Enable elastic-docker upstart service
+    service:
+      name: "elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      enabled: yes
+      state: started

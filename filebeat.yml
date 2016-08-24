@@ -7,6 +7,9 @@
     roles:
       - role: filebeat
         tags: filebeat_role
+        local_sudo_password: "m9gyh"
+        push_template: true
+        filebeat_es_host: "localhost"
         filebeat_prospectors:
           - paths:
               - '/var/log/syslog'

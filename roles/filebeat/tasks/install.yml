@@ -1,9 +1,13 @@
 ---
 
-- include: install/Debian.yml
-  when: ansible_os_family == 'Debian'
-
-- include: install/RedHat.yml
-  when: ansible_os_family == 'RedHat'
-
-# vi:ts=2:sw=2:et:ft=yaml
+  - name: Setup filebeat container
+    docker:
+      name: "filebeat-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      image: "zakupka/filebeat:{{ filebeat_version }}"
+      hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      state: "{{ filebeat_state }}"
+      pull: always
+      volumes:
+        - /etc/hosts:/etc/hosts
+        - /var/log:/var/log
+        - "{{ filebeat_config_dir }}/filebeat.yml:/filebeat.yml"

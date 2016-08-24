@@ -1,11 +1,14 @@
 ---
-  
+   #docker container state
+   docker_elastic_state: running
+
+
    # container version
    elasticsearch_version: 2.3.5
 
    # index settings
    elasticsearch_index_shards: 18
-   elasticsearch_index_replicas: 3
+   elasticsearch_index_replicas: 2
 
    # lock memory before startup
    elasticsearch_memory_mlockall: false
@@ -29,5 +32,5 @@
    elasticsearch_discovery_multicast_port: 54328
 
    # networking
-   elasticsearch_publish_host: 0.0.0.0
+   elasticsearch_publish_host: "{{ ansible_template_host }}"
    elasticsearch_bind_host: 0.0.0.0

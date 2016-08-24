@@ -9,7 +9,6 @@
         tags:
           - logstash_reciever_role
           - logstash_stack
-        logstash_fb_input_port: 5000
         is_reciever: true
         is_filter: false
         logstash_container_name: logstash-reciever

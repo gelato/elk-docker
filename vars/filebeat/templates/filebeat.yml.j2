@@ -82,15 +82,15 @@ shipper:
      - "/usr/share/GeoIP/GeoIP.dat"
     #  - "/usr/local/var/GeoIP/GeoLiteCity.dat"
 
-logging:
-  to_syslog: false
-  to_files: true
-  files:
-    path: /var/log/filebeat
-    name: mybeat.log
-    keepfiles: 5
-    rotateeverybytes: 10485760 # = 10MB
-  level: error
+#logging:
+#  to_syslog: false
+#  to_files: true
+#  files:
+#    path: /var/log/filebeat
+#    name: mybeat.log
+#    keepfiles: 5
+#    rotateeverybytes: 10485760 # = 10MB
+#  level: error
 
 # General filebeat configuration options
 #
