@@ -1,6 +1,6 @@
 ---
-  
+
   - name: restart haproxy
     service:
-      name: haproxy
+      name: "haproxy-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
       state: restarted

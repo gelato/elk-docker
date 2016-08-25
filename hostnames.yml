@@ -1,0 +1,8 @@
+---
+
+  - name: Hosts
+    hosts: all
+    become: True
+    roles:
+     - role: hosts
+       tags: hosts_role

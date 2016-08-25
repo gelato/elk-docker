@@ -3,11 +3,12 @@
   - hosts: main
     become: True
 
+  - include: docker.yml
   - include: elasticsearch.yml
-  - include: filebeat.yml
+  - include: hostnames.yml
   - include: rabbitmq.yml
+  - include: haproxy.yml
   - include: logstash-filter.yml
   - include: logstash-reciever.yml
-  - include: kibana.yml
-  - include: docker.yml
-  - include: haproxy.yml
+  - include: filebeat.yml
+  # - include: kibana.yml

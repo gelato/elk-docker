@@ -2,7 +2,7 @@
 
   - name: Setup filebeat container
     docker:
-      name: "filebeat-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      name: filebeat
       image: "zakupka/filebeat:{{ filebeat_version }}"
       hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
       state: "{{ filebeat_state }}"

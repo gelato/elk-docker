@@ -1,109 +1,113 @@
 ---
 
+  - name: 'Set Debian/Ubuntu haproxy config location'
+    set_fact: config_location=/opt/haproxy/haproxy.cfg
+    when: ansible_os_family == "Debian"
+
   - name: 'Create directory for the frontend'
     file:
-      path: "/etc/haproxy/frontends.d"
+      path: "/opt/haproxy/frontends.d"
       state: directory
 
   - name: 'Empty the folder if not already empty'
-    command: find /etc/haproxy/frontends.d -name *.cfg -exec rm -f {} \;
+    command: find /opt/haproxy/frontends.d -name *.cfg -exec rm -f {} \;
 
   - name: 'Build up the frontends'
     template:
       src: frontend.cfg
-      dest: "/etc/haproxy/frontends.d/{{ item.name }}.cfg"
+      dest: "/opt/haproxy/frontends.d/{{ item.name }}.cfg"
     with_items: haproxy_frontends
     when: haproxy_frontends is defined
 
   - name: 'Create directory for the backends'
     file:
-      path: "/etc/haproxy/backends.d"
+      path: "/opt/haproxy/backends.d"
       state: directory
 
   - name: 'Empty the folder if not already empty'
-    command: find /etc/haproxy/backends.d -name *.cfg -exec rm -f {} \;
+    command: find /opt/haproxy/backends.d -name *.cfg -exec rm -f {} \;
 
   - name: 'Build up the backends'
     template:
       src: backend.cfg
-      dest: "/etc/haproxy/backends.d/{{ item.name }}.cfg"
+      dest: "/opt/haproxy/backends.d/{{ item.name }}.cfg"
     with_items: haproxy_backends
     when: haproxy_backends is defined
 
   - name: 'Create directory for the listen sections'
     file:
-      path: /etc/haproxy/listen.d
+      path: /opt/haproxy/listen.d
       state: directory
 
   - name: 'Empty the folder if not already empty'
-    command: find /etc/haproxy/listen.d -name *.cfg -exec rm -f {} \;
+    command: find /opt/haproxy/listen.d -name *.cfg -exec rm -f {} \;
 
   - name: 'Build up the listen sections'
     template:
       src: listen.cfg
-      dest: "/etc/haproxy/listen.d/{{ item.name }}.cfg"
+      dest: "/opt/haproxy/listen.d/{{ item.name }}.cfg"
     with_items: "{{ haproxy_listen }}"
     when: haproxy_listen is defined
 
   - name: 'Create directory for the userlists'
     file:
-       path: "/etc/haproxy/userlists.d"
+       path: "/opt/haproxy/userlists.d"
        state: directory
 
   - name: 'Empty the folder if not already empty'
-    command: find /etc/haproxy/userlists.d -name *.cfg -exec rm -f {} \;
+    command: find /opt/haproxy/userlists.d -name *.cfg -exec rm -f {} \;
 
   - name: 'Build up the userlist sections'
     template:
       src: userlist.cfg
-      dest: "/etc/haproxy/userlists.d/{{ item.name }}.cfg"
+      dest: "/opt/haproxy/userlists.d/{{ item.name }}.cfg"
     with_items: haproxy_userlists
     when: haproxy_userlists is defined
 
   - name: 'Create the compiled folder'
     file:
-      path: /etc/haproxy/compiled
+      path: /opt/haproxy/compiled
       state: directory
 
   - name: 'Empty the folder if not already empty'
-    command: find /etc/haproxy/compiled -name *.cfg -exec rm -f {} \;
+    command: find /opt/haproxy/compiled -name *.cfg -exec rm -f {} \;
 
   - name: 'Build up the global config'
     template:
       src: global.cfg
-      dest: /etc/haproxy/compiled/01-global.cfg
+      dest: /opt/haproxy/compiled/01-global.cfg
     when: haproxy_global is defined
     tags: ["test"]
 
   - name: 'Build up the default config'
     template:
       src: defaults.cfg
-      dest: /etc/haproxy/compiled/02-defaults.cfg
+      dest: /opt/haproxy/compiled/02-defaults.cfg
     when: haproxy_defaults is defined
 
   - name: 'Assemble the backends configuration file'
     assemble:
-       src: /etc/haproxy/backends.d
-       dest: /etc/haproxy/compiled/03-backends.cfg
+       src: /opt/haproxy/backends.d
+       dest: /opt/haproxy/compiled/03-backends.cfg
 
   - name: 'Assemble the frontends configuration file'
     assemble:
-      src: /etc/haproxy/frontends.d
-      dest: /etc/haproxy/compiled/04-frontends.cfg
+      src: /opt/haproxy/frontends.d
+      dest: /opt/haproxy/compiled/04-frontends.cfg
 
   - name: 'Assemble the listen sections configuration file'
     assemble:
-      src: /etc/haproxy/listen.d
-      dest: /etc/haproxy/compiled/05-listen.cfg
+      src: /opt/haproxy/listen.d
+      dest: /opt/haproxy/compiled/05-listen.cfg
 
   - name: 'Assemble the userlists sections configuration file'
     assemble:
-      src: /etc/haproxy/userlists.d
-      dest: /etc/haproxy/compiled/06-userlists.cfg
+      src: /opt/haproxy/userlists.d
+      dest: /opt/haproxy/compiled/06-userlists.cfg
 
   - name: 'Assemble the final configuration file'
     assemble:
-      src: /etc/haproxy/compiled
+      src: /opt/haproxy/compiled
       dest: "{{ config_location }}"
       backup: yes
     notify: restart haproxy

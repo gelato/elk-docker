@@ -18,8 +18,6 @@
       owner: root
       group: root
       mode: 0640
-    notify:
-      - filebeat restart
     tags:
       - filebeat_config
 

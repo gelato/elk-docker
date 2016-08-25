@@ -6,7 +6,6 @@
       - httplog
       - dontlognull
       - httpclose
-      - forwardfor
       - redispatch
     retries: 3
     timeout:
@@ -18,33 +17,32 @@
   haproxy_listen:
    - name: logstash
      bind:
-       - 127.0.0.1:6672
+       - 0.0.0.0:6672
      mode: tcp
      description: Listening for logstashes
      balance: leastconn
      retries: 3
      servers:
       - name: 'rabbit-master'
-        ip: "{{ hostvars[groups['elasticsearch_masters'][0]]['ansible_template_host'] }}:5672"
+        ip: "{{ hostvars[groups['rabbitmq'][0]]['ansible_template_host'] }}:5672"
         params:
           - check
           - weight 255
       - name: 'rabbit-slave-01'
-        ip: "{{ hostvars[groups['elasticsearch_masters'][1]]['ansible_template_host'] }}:5672"
+        ip: "{{ hostvars[groups['rabbitmq'][1]]['ansible_template_host'] }}:5672"
         params:
           - check
           - weight 255
       - name: 'rabbit-slave-02'
-        ip: "{{ hostvars[groups['elasticsearch_masters'][2]]['ansible_template_host'] }}:5672"
+        ip: "{{ hostvars[groups['rabbitmq'][2]]['ansible_template_host'] }}:5672"
         params:
           - check
           - weight 255
      options:
        - clitcpka
-       - httplog
+       - tcplog
        - dontlognull
        - httpclose
-       - forwardfor
        - redispatch
      timeout:
       - param: client
@@ -57,6 +55,13 @@
      bind:
        - 0.0.0.0:8077
      description: Listening for logstashes
+     timeout:
+      - param: client
+        value: 3h
+      - param: server
+        value: 3h
+      - param: connect
+        value: 5000
      stats:
        - uri /stats
        - realm Haproxy\ Statistics
