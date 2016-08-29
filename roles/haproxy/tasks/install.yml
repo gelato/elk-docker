@@ -16,6 +16,7 @@
       ports:
         - 8077:8077
         - 6672:6672
+      restart_policy: unless-stopped
 
   - name: Create haproxy docker upstart script
     template:

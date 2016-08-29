@@ -6,11 +6,11 @@
 
   dns_url_kibana: "{{ ansible_hostname }}"
 
-  kibana_major_version: 4.5
+  kibana_major_version: 4.5.4
 
   kibana_port: 5601
   kibana_host: '0.0.0.0'
-  kibana_elasticsearch_url: "http://127.0.0.1:9200"
+  kibana_elasticsearch_url: "http://{{ hostvars[groups['elasticsearch_masters'][0]]['ansible_template_host'] }}:9200"
   kibana_elasticsearch_preserve_host: true
   kibana_index: '.kibana'
   kibana_enable_authentication: false

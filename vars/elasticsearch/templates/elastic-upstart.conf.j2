@@ -4,5 +4,5 @@ start on filesystem and started docker
 stop on runlevel [!2345]
 respawn
 script
-  /usr/bin/docker start elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}
+  /usr/bin/docker start -a elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}
 end script

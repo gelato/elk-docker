@@ -1,14 +1,10 @@
 ---
 
   - name: create destination directory
-    file: path={{ kibana_path }} owner=www-data group=www-data mode=0755 state=directory
+    file: path={{ kibana_path }} owner=root group=root mode=0755 state=directory
     tags: [kibana]
 
   - include: kibana.yml
-    tags: [kibana]
-
-  - include: setup-Debian.yml
-    when: ansible_os_family == 'Debian'
     tags: [kibana]
 
   - include: plugins.yml

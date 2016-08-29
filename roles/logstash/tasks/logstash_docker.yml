@@ -14,6 +14,7 @@
       image: "logstash:{{ logstash_container_version }}"
       state: running
       pull: always
+      restart_policy: unless-stopped
       command: "logstash -f /config-dir"
     when: is_reciever and not is_filter
 
@@ -27,5 +28,6 @@
       image: "logstash:{{ logstash_container_version }}"
       state: running
       pull: always
+      restart_policy: unless-stopped
       command: "logstash -f /config-dir"
     when: is_filter and not is_reciever

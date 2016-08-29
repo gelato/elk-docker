@@ -2,7 +2,7 @@
 
   - name: Setup rabbitmq master container
     docker:
-      name: rabbitmq-master
+      name: rabbitmq
       image: "rabbitmq:{{ rmq_version }}-management"
       hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
       env:
@@ -21,12 +21,13 @@
         - 5671:5671
         - 5672:5672
         - 25672:25672
+      restart_policy: unless-stopped
     with_items: "{{ rabbitmq_vhost_definitions }}"
     when: inventory_hostname == "{{ rabbitmq_master }}"
 
   - name: Setup rabbitmq slave containers
     docker:
-      name: rabbitmq-slave
+      name: rabbitmq
       image: "rabbitmq:{{ rmq_version }}-management"
       hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
       env:
@@ -45,6 +46,7 @@
         - 5671:5671
         - 5672:5672
         - 25672:25672
+      restart_policy: unless-stopped
     with_items: "{{ rabbitmq_vhost_definitions }}"
     when: form_cluster and inventory_hostname != "{{ rabbitmq_master }}"
 

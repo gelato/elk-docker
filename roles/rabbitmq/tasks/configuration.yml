@@ -28,14 +28,14 @@
   - name: Create rabbitmq docker upstart script
     template:
       src: "{{ rabbitmq_config_templates }}/rmq-upstart.conf.j2"
-      dest: "/etc/init/rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}.conf"
+      dest: "/etc/init/rabbitmq.conf"
       owner: "root"
       group: "root"
       mode: 0775
 
   - name: Enable rmq-docker upstart service
     service:
-      name: "rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      name: "rabbitmq"
       enabled: yes
       state: started
 

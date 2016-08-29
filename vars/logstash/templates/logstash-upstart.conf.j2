@@ -4,5 +4,5 @@ start on filesystem and started docker
 stop on runlevel [!2345]
 respawn
 script
-  /usr/bin/docker start {{ logstash_container_name }}
+  /usr/bin/docker start -a {{ logstash_container_name }}
 end script

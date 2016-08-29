@@ -11,4 +11,4 @@
   - include: logstash-filter.yml
   - include: logstash-reciever.yml
   - include: filebeat.yml
-  # - include: kibana.yml
+  - include: kibana.yml

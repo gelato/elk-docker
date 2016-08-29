@@ -11,3 +11,4 @@
         - /etc/hosts:/etc/hosts
         - /var/log:/var/log
         - "{{ filebeat_config_dir }}/filebeat.yml:/filebeat.yml"
+      restart_policy: unless-stopped

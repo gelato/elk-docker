@@ -1,20 +1,46 @@
 ---
 
-  - name: Add Kibana apt key.
-    apt_key: url=https://packages.elastic.co/GPG-KEY-elasticsearch state=present
-
-  - name: Install apt-transport-https dependency.
-    apt: name=apt-transport-https update_cache=yes state=latest install_recommends=no
-
-  - name: Install Kibana repository.
-    apt_repository: repo='deb http://packages.elastic.co/kibana/"{{ kibana_major_version }}"/debian stable main' state=present
-
-  - name: Install Kibana packages.
-    apt: name=kibana update_cache=yes state=latest install_recommends=no
+  - name: Create Kibana dirs
+    file:
+      name: "{{ kibana_path }}/config"
+      state: directory
 
   - name: set Kibana configuration
-    template: src={{ kibana_vars_dir }}/kibana4.yml.j2 dest={{ kibana_path }}/config/kibana.yml mode=0644
+    template:
+      src: "{{ kibana_vars_dir }}/kibana4.yml.j2"
+      dest: "{{ kibana_path }}/config/kibana.yml"
+      mode: 0755
     notify: restart kibana service
 
-  - name: ensure kibana is started
-    service: name=kibana state=started enabled=yes
+  - name: Setup Kibana container
+    docker:
+      name: kibana
+      image: "kibana:{{ kibana_major_version }}"
+      hostname: "kibana-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
+      state: running
+      pull: always
+      env:
+        ELASTICSEARCH_URL: "http://{{ hostvars[groups['elasticsearch_masters'][0]]['ansible_template_host'] }}:9200"
+      volumes:
+        - /etc/hosts:/etc/hosts
+        - "{{ kibana_path }}/config/kibana.yml:/etc/kibana/kibana.yml"
+      expose:
+        - 5601
+      ports:
+        - 80:5601
+      restart_policy: unless-stopped
+
+
+  - name: Create kibana-docker upstart script
+    template:
+      src: "{{ kibana_vars_dir }}/kibana-upstart.conf.j2"
+      dest: "/etc/init/kibana.conf"
+      owner: "root"
+      group: "root"
+      mode: 0775
+
+  - name: Enable logstash-docker upstart service
+    service:
+      name: kibana
+      enabled: yes
+      state: started
