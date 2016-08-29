@@ -6,24 +6,29 @@
     roles:
       - role: kibana
         tags: kibana_role
-      # - role: nginx
-      #   tags: kibana_role
-      #   nginx_sites:
-      #     kibana.domain.lan:
-      #       - listen 80
-      #       - server_name kibana.domain.lan
-      #       - access_log /var/log/nginx/kibana.domain.lan_access.log combined
-      #       - error_log /var/log/nginx/kibana.domain.lan_error.log
-      #       - error_page   500 502 503 504  /50x.html
-      #       - location = /50x.html {
-      #           root /usr/share/nginx/html;
-      #         }
-      #       - location / {
-      #           add_header          Access-Control-Request-Headers "accept, x-auth-token";
-      #           proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
-      #           proxy_set_header    Host $http_host;
-      #           proxy_set_header    X-Real-IP $remote_addr;
-      #           proxy_pass          http://127.0.0.1:5601/;
-      #         }
+      - role: nginx
+        tags: kibana_role
+        nginx_sites:
+          kibana.domain.lan:
+            - listen 80
+            - server_name kibana.domain.lan
+            - access_log /var/log/nginx/kibana.domain.lan_access.log combined
+            - error_log /var/log/nginx/kibana.domain.lan_error.log
+            - error_page   500 502 503 504  /50x.html
+            - location = /50x.html {
+                root /usr/share/nginx/html;
+              }
+            - location / {
+                add_header          Access-Control-Request-Headers "accept, x-auth-token";
+                proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header    Host $http_host;
+                proxy_set_header    X-Real-IP $remote_addr;
+                auth_basic          "Restricted";
+                auth_basic_user_file auth_basic/admins;
+                proxy_pass          http://{{ hostvars[groups['kibana'][0]]['ansible_template_host'] }}:5601/;
+              }
+        nginx_auth_basic_files:
+           admins:
+             - admin:$apr1$yzB6Y2ah$HavQ9gKquvkcyh847xYf51 #htpasswd -nb admin:L0nl1L0kl1
     vars_files:
       - "vars/kibana/kibana.yml"

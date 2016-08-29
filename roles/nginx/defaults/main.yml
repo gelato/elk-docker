@@ -1,6 +1,11 @@
 ---
 keep_only_specified: True
 
+nginx_cont_dir: /etc/nginx
+
+nginx_container_version: 1.10.1-alpine
+
+nginx_official_repo_mainline: true
 nginx_binary_name: "nginx"
 nginx_service_name: "{{ nginx_binary_name }}"
 nginx_conf_dir: "{% if ansible_os_family == 'FreeBSD' %}/usr/local/etc/nginx{% else %}/opt/nginx{% endif %}"
@@ -40,5 +45,3 @@ nginx_remove_configs: []
 
 nginx_auth_basic_files: {}
 nginx_remove_auth_basic_files: []
-
-nginx_daemon_mode: "on"

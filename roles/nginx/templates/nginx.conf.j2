@@ -18,14 +18,14 @@ events {
 
 http {
 
-        include {{ nginx_conf_dir }}/mime.types;
+        include {{ nginx_cont_dir }}/mime.types;
         default_type application/octet-stream;
 {% for v in nginx_http_params %}
         {{ v }};
 {% endfor %}
 
-        include {{ nginx_conf_dir }}/conf.d/*.conf;
-        include {{ nginx_conf_dir }}/sites-enabled/*;
+        include {{ nginx_cont_dir }}/conf.d/*.conf;
+        include {{ nginx_cont_dir }}/sites-enabled/*;
 }
 
 {% if nginx_official_repo_mainline %}
@@ -35,10 +35,6 @@ stream {
         {{ v }};
 {% endfor %}
 
-        include {{ nginx_conf_dir }}/conf.d/stream/*.conf;
+        include {{ nginx_cont_dir }}/conf.d/stream/*.conf;
 }
-{% endif %}
-
-{% if nginx_daemon_mode == "off" %}
-daemon off;
 {% endif %}
