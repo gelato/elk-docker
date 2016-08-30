@@ -13,10 +13,10 @@
       volumes:
         - /etc/hosts:/etc/hosts
         - "{{ nginx_conf_dir }}:{{ nginx_cont_dir }}"
-      state: running
+      state: started
       pull: yes
       restart_policy: always
-    changed_when: True
+      force_kill: yes
 
   - name: reload nginx
     docker_container:
@@ -31,7 +31,7 @@
       volumes:
         - /etc/hosts:/etc/hosts
         - "{{ nginx_conf_dir }}:{{ nginx_cont_dir }}"
-      state: running
+      state: started
       pull: yes
       restart_policy: always
-    changed_when: True
+      force_kill: yes
