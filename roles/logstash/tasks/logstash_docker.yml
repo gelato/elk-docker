@@ -3,6 +3,7 @@
   - name: Start reciever containers
     docker:
       name: "{{ logstash_container_name }}"
+      env: "LS_HEAP_SIZE={{ ls_heap }}"
       expose:
         - 5000
       ports:
@@ -21,6 +22,7 @@
   - name: Start filter containers
     docker:
       name: "{{ logstash_container_name }}"
+      env: "LS_HEAP_SIZE={{ ls_heap }}"
       volumes:
         - "{{ logstash_conf_dir }}/{{ logstash_conf_type }}:/config-dir"
         - "{{ logstash_host_patterns_dir }}:/config-dir/patterns"

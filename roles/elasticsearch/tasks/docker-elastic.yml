@@ -5,6 +5,7 @@
       name: "elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
       hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
       image: "elasticsearch:{{ elasticsearch_version }}"
+      env: "ES_HEAP_SIZE={{ es_heap }}"
       expose:
         - "9400"
         - '9000'

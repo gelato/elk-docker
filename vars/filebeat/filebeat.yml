@@ -1,6 +1,7 @@
 filebeat_destinations:
   - "{{ hostvars[groups['logstash-reciever'][0]]['ansible_template_host'] }}"
   - "{{ hostvars[groups['logstash-reciever'][1]]['ansible_template_host'] }}"
+  - "{{ hostvars[groups['logstash-reciever'][2]]['ansible_template_host'] }}"
 
 logstash_port: 5000
 

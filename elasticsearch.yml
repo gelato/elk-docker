@@ -7,3 +7,7 @@
     roles:
       - role: elasticsearch
         tags: elasticsearch_role
+         elasticsearch_index_shards: 1
+         elasticsearch_index_replicas: 2
+         elasticsearch_memory_mlockall: false
+         es_heap: 512M

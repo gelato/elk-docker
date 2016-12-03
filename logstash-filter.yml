@@ -35,6 +35,7 @@
         rabbitmq_endpoint: "{{ hostvars[groups['rabbitmq'][0]]['ansible_template_host'] }}"
 
         logstash_conf_type: filter
+        ls_heap: 512M
 
       - role: tzdata
         timezone: Europe/Simferopol

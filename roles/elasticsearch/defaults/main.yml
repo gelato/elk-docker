@@ -1,6 +1,7 @@
 ---
 elastic_templates_dir: 'vars/elasticsearch/templates'
 docker_elastic_state: running
+es_heap: 512M
 # paths
 elastic_host_plugins_dir: '/opt/elasticsearch/plugins'
 elastic_host_data_dir: '/opt/elasticsearch/esdata'

@@ -24,6 +24,7 @@
           - nginx
 
         logstash_conf_type: reciever
+        ls_heap: 128M
 
       - role: tzdata
         timezone: Europe/Simferopol

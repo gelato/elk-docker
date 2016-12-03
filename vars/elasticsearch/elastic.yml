@@ -1,13 +1,13 @@
 ---
+
    #docker container state
    docker_elastic_state: running
 
-
    # container version
-   elasticsearch_version: 2.3.5
+   elasticsearch_version: '2.3.5'
 
    # index settings
-   elasticsearch_index_shards: 18
+   elasticsearch_index_shards: 1
    elasticsearch_index_replicas: 2
 
    # lock memory before startup
@@ -19,6 +19,7 @@
    elasticsearch_plugins:
        - name: 'lmenezes/elasticsearch-kopf/2.1.1'
        - name: 'royrusso/elasticsearch-hq/v2.0.3'
+
    # official plugins
    install_core_plugins: false
    elasticsearch_core_plugins:

@@ -1,6 +1,7 @@
 ---
 
   logstash_fb_input_port: 5000
+  ls_heap: 512M
   logstash_endpoint_host_ip: []
   logstash_user: root
   logstash_group: root
