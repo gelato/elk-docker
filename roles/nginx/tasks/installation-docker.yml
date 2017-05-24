@@ -1,17 +1,17 @@
 ---
 
     - name: Get and start Elasticsearch container
-      docker:
+      docker_container:
         name: "nginx"
         hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
         image: "nginx:{{ nginx_container_version }}"
-        expose:
+        exposed_ports:
           - "80"
-        ports:
+        published_ports:
           - "80:80"
         volumes:
           - /etc/hosts:/etc/hosts
           - "{{ nginx_conf_dir }}:{{ nginx_cont_dir }}"
-        state: running
-        pull: always
+        state: started
+        pull: yes
         restart_policy: unless-stopped

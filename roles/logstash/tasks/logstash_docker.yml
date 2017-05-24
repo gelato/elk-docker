@@ -1,26 +1,26 @@
 ---
 
   - name: Start reciever containers
-    docker:
+    docker_container:
       name: "{{ logstash_container_name }}"
       env: "LS_HEAP_SIZE={{ ls_heap }}"
-      expose:
+      exposed_ports:
         - 5000
-      ports:
+      published_ports:
         - 5000:5000
       volumes:
         - "{{ logstash_conf_dir }}/{{ logstash_conf_type }}:/config-dir"
         - "{{ logstash_host_patterns_dir }}:/config-dir/patterns"
         - "/var/log/machines/{{ logstash_container_name }}:/var/log"
       image: "logstash:{{ logstash_container_version }}"
-      state: running
-      pull: always
+      state: started
+      pull: yes
       restart_policy: unless-stopped
       command: "logstash -f /config-dir"
     when: is_reciever and not is_filter
 
   - name: Start filter containers
-    docker:
+    docker_container:
       name: "{{ logstash_container_name }}"
       env: "LS_HEAP_SIZE={{ ls_heap }}"
       volumes:
@@ -28,8 +28,8 @@
         - "{{ logstash_host_patterns_dir }}:/config-dir/patterns"
         - "/var/log/machines/{{ logstash_container_name }}:/var/log"
       image: "logstash:{{ logstash_container_version }}"
-      state: running
-      pull: always
+      state: started
+      pull: yes
       restart_policy: unless-stopped
       command: "logstash -f /config-dir"
     when: is_filter and not is_reciever

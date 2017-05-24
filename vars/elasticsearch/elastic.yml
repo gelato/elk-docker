@@ -1,7 +1,7 @@
 ---
 
    #docker container state
-   docker_elastic_state: running
+   docker_elastic_state: started
 
    # container version
    elasticsearch_version: '2.3.5'

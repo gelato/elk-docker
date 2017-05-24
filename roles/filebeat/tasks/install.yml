@@ -1,12 +1,12 @@
 ---
 
   - name: Setup filebeat container
-    docker:
+    docker_container:
       name: filebeat
       image: "zakupka/filebeat:{{ filebeat_version }}"
       hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
       state: "{{ filebeat_state }}"
-      pull: always
+      pull: yes
       volumes:
         - /etc/hosts:/etc/hosts
         - /var/log:/var/log

@@ -1,4 +1,4 @@
 ---
 
-  - name: restart elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}
+  - name: restart elasticsearch
     shell: docker restart elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}

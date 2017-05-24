@@ -12,8 +12,8 @@ Vagrant.configure(2) do |config|
          node.vm.box = "ubuntu/trusty64"
          node.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
          node.vm.network :public_network, ip: "192.168.0.#{169+i}",
-            :use_dhcp_assigned_default_route => true, bridge: "eth0"
-         node.vm.network :private_network, ip: "192.168.111.#{10+i}"
+            :use_dhcp_assigned_default_route => true, bridge: "enp2s0"
+         node.vm.network :private_network, ip: "192.168.111.#{9+i}"
          node.vm.hostname = "node#{i}"
          node.vm.network "forwarded_port", guest: 9200, host: 9200,
             auto_correct: true

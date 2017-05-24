@@ -1,7 +1,7 @@
 ---
 
   - name: Setup rabbitmq master container
-    docker:
+    docker_container:
       name: rabbitmq
       image: "rabbitmq:{{ rmq_version }}-management"
       hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
@@ -11,11 +11,11 @@
         RABBITMQ_NODENAME: "{{ item.node }}"
         RABBITMQ_HIPE_COMPILE: "{{ rmq_hipe_compile }}"
       state: "{{ docker_rmq_state }}"
-      pull: always
+      pull: yes
       volumes:
         - "/var/log/machines/rabbitmq-{{ hostvars[inventory_hostname]['inventory_hostname'] }}:/var/log"
         - /etc/hosts:/etc/hosts
-      ports:
+      published_ports:
         - "{{ rabbitmq_talking_port }}:15672"
         - 4369:4369
         - 5671:5671
@@ -26,7 +26,7 @@
     when: inventory_hostname == "{{ rabbitmq_master }}"
 
   - name: Setup rabbitmq slave containers
-    docker:
+    docker_container:
       name: rabbitmq
       image: "rabbitmq:{{ rmq_version }}-management"
       hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
@@ -36,11 +36,11 @@
         RABBITMQ_NODENAME: "{{ item.node }}"
         RABBITMQ_HIPE_COMPILE: "{{ rmq_hipe_compile }}"
       state: "{{ docker_rmq_state }}"
-      pull: always
+      pull: yes
       volumes:
         - /opt/rabbit:/opt/rabbit
         - /etc/hosts:/etc/hosts
-      ports:
+      published_ports:
         - "{{ rabbitmq_talking_port }}:15672"
         - 4369:4369
         - 5671:5671

@@ -1,6 +1,6 @@
 ---
 
-  filebeat_state: running
+  filebeat_state: started
   filebeat_es_host: "localhost"
   filebeat_template_dir: "vars/filebeat/templates"
 

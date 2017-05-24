@@ -1,15 +1,15 @@
 ---
 
   - name: Get and start Elasticsearch container
-    docker:
+    docker_container:
       name: "elastic-{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
       hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
       image: "elasticsearch:{{ elasticsearch_version }}"
       env: "ES_HEAP_SIZE={{ es_heap }}"
-      expose:
+      exposed_ports:
         - "9400"
         - '9000'
-      ports:
+      published_ports:
         - "9000:9000"
         - "9200:9200"
         - "9300:9300"
@@ -23,5 +23,5 @@
         - "{{ elastic_host_data_dir }}:{{ elasticsearch_path_data }}"
         - "{{ elastic_host_plugins_dir }}:{{ elasticsearch_path_plugins }}"
       state: "{{ docker_elastic_state }}"
-      pull: always
+      pull: yes
       restart_policy: unless-stopped

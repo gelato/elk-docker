@@ -1,19 +1,19 @@
 ---
 
   - name: Setup HAproxy container
-    docker:
+    docker_container:
       name: haproxy
       image: "haproxy:{{ haproxy_version }}"
       hostname: "{{ hostvars[inventory_hostname]['inventory_hostname'] }}"
-      state: running
-      pull: always
+      state: started
+      pull: yes
       volumes:
         - /etc/hosts:/etc/hosts
         - "{{ config_location }}:/usr/local/etc/haproxy/haproxy.cfg"
-      expose:
+      exposed_ports:
         - 8077
         - 6672
-      ports:
+      published_ports:
         - 8077:8077
         - 6672:6672
       restart_policy: unless-stopped
